@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aries 발표</title>
+<style>
+  /* 인터넷 없이 동작: 글꼴·차트·그림 모두 로컬 파일 */
+  @font-face{font-family:Pretendard;font-weight:400;src:url(fonts/Pretendard-Regular.otf)}
+  @font-face{font-family:Pretendard;font-weight:600;src:url(fonts/Pretendard-SemiBold.otf)}
+  @font-face{font-family:Pretendard;font-weight:700 900;src:url(fonts/Pretendard-Bold.otf)}
+  :root{
+    --bg:#FFFFFF; --ink:#17191D; --sub:#4D5560; --mute:#8A919B;
+    --lime:#8BD450; --green:#6FBF35; --deep:#2B8636; --teal:#0E7C57; --lime50:#F3FBEC; --lime100:#E4F6D3;
+    --amber:#F5B565; --amber50:#FFF4E5; --amber700:#B45309; --blue:#5B9BEA; --blue100:#DCEAFD; --sky:#BFE3FF;
+    --ease:cubic-bezier(.2,.8,.2,1);
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%;background:#FFFFFF;overflow:hidden}
+  body{font-family:Pretendard,system-ui,sans-serif;color:var(--ink);word-break:keep-all}
+  /* 16:9 무대를 화면에 맞춰 키움 */
+  #stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;background:var(--bg);transform-origin:center;overflow:hidden}
+  .slide{position:absolute;inset:0;padding:90px 110px;opacity:0;pointer-events:none;transition:opacity .625s var(--ease)}
+  .slide.on{opacity:1;pointer-events:auto}
+  /* 등장 애니메이션: data-a 순서대로 */
+  [data-a]{opacity:0;transform:translateY(40px);transition:opacity .875s var(--ease),transform 1.125s var(--ease)}
+  [data-a="left"]{transform:translateX(-120px)} [data-a="right"]{transform:translateX(160px)} [data-a="pop"]{transform:scale(.6)}
+  .on [data-a]{opacity:1;transform:none}
+  .slide:not(.on):not(.leaving) *,.slide:not(.on):not(.leaving) *::before{transition-duration:0s!important;transition-delay:0s!important;animation-play-state:paused}
+  /* 나가는 애니메이션: 들어올 때의 반대로, 빠르게 한꺼번에(지연 없음) */
+  .slide.leaving{opacity:1;transition:none}
+  /* 나가는 순서·시간은 스크립트가 요소마다 들어올 때의 정확히 반대로 계산(빠르기만 OUT_SPEED배) */
+  /* 배경 도형 */
+  .blob{position:absolute;border-radius:50%;filter:blur(0);opacity:0;transform:scale(.3);transition:opacity 1.25s var(--ease),transform 1.75s var(--ease)}
+  .on .blob{opacity:1;transform:scale(1)}
+  .pill{position:absolute;border-radius:999px;opacity:0;transform:translateX(200px) rotate(var(--r,0deg));transition:opacity 1.25s var(--ease),transform 1.625s var(--ease)}
+  .on .pill{opacity:1;transform:translateX(0) rotate(var(--r,0deg))}
+  h1{font-size:150px;font-weight:900;letter-spacing:-4px;line-height:1}
+  h2{font-size:64px;font-weight:800;letter-spacing:-1.5px;line-height:1.15}
+  h3{font-size:30px;font-weight:700}
+  .kicker{font-size:22px;font-weight:700;letter-spacing:1px;color:var(--deep);text-transform:uppercase;margin-bottom:20px}
+  .lead{font-size:34px;font-weight:600;color:var(--sub);line-height:1.45}
+  .src{position:absolute;left:110px;right:110px;bottom:30px;font-size:16px;color:#6B727C;line-height:1.5}
+  .float{animation:float 4s ease-in-out infinite}
+  @keyframes float{50%{transform:translateY(-18px)}}
+  .grad{background:linear-gradient(120deg,var(--deep),var(--teal) 60%,var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* 1 표지 */
+  #s1 .who{position:absolute;left:110px;bottom:90px;font-size:28px;font-weight:600;color:var(--sub)}
+  #s1 .ari{position:absolute;right:150px;top:170px;width:520px}
+
+  /* 2 문제 — 이야기 */
+  #s2 .line{position:relative;z-index:1;font-size:50px;font-weight:800;line-height:1.35;letter-spacing:-1px}
+  #s2 .line em{font-style:normal;padding:0 10px;border-radius:12px;background:linear-gradient(transparent 55%,var(--amber) 55%)}
+  #s2 .end{margin-top:46px;font-size:54px}
+  #s2 .talk{z-index:1;position:absolute;left:110px;bottom:70px;display:flex;gap:16px;flex-wrap:wrap;max-width:1180px}
+  #s2 .bub{font-size:26px;font-weight:700;color:var(--sub);background:#F1F2F4;padding:16px 26px;border-radius:28px 28px 28px 8px}
+
+  /* 3 문제 — 숫자 */
+  .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px;margin-top:30px}
+  .card{min-width:0;background:#fff;border-radius:36px;padding:36px;box-shadow:0 20px 60px rgba(23,25,29,.10);height:500px;display:flex;flex-direction:column}
+  .card .num{font-size:84px;font-weight:900;letter-spacing:-2px;line-height:1}
+  .card .cap{font-size:24px;font-weight:600;color:var(--sub);margin:12px 0 18px;line-height:1.4}
+  .card .cv{position:relative;flex:1;min-height:0;width:100%}
+
+  /* 4 해결 */
+  .words{display:flex;gap:28px;margin-top:30px}
+  .word{font-size:46px;font-weight:800;padding:18px 34px;border-radius:999px;background:var(--lime100);color:var(--deep)}
+  .phones{position:absolute;left:0;right:0;bottom:-160px;height:620px}
+  .phone{position:absolute;bottom:0;width:300px;border-radius:44px;border:10px solid #17191D;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.25);background:#fff;transition:transform 1.5s var(--ease),opacity 1s}
+  .phone img{display:block;width:100%}
+  .slide:not(.on) .phone{transform:translateY(300px) rotate(0)!important;opacity:0}
+
+  /* 5 유형 */
+  .types{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;margin-top:44px}
+  .type{perspective:900px;height:124px}
+  .type .in{height:100%;border-radius:28px;background:var(--lime50);border:3px solid var(--lime100);padding:18px 22px;display:flex;flex-direction:column;justify-content:space-between;transform:rotateX(90deg);transform-origin:top;opacity:0;backface-visibility:hidden;transition:transform 1s var(--ease),opacity .313s linear}
+  .on .type .in{transform:none;opacity:1}
+  .type b{font-size:18px;color:var(--deep)} .type span{font-size:25px;font-weight:800}
+  .type.soon .in{background:#fff;border:3px dashed var(--lime)}
+  .type.chat .in{background:linear-gradient(135deg,var(--deep),var(--teal));border-color:transparent;color:#fff}
+  .type.chat b{color:#CFF3D8}
+  .strip{position:absolute;left:110px;right:110px;bottom:-110px;display:flex;gap:44px;justify-content:center}
+  .strip img{flex:1;min-width:0;max-width:185px;border-radius:24px;border:7px solid #17191D;box-shadow:0 20px 50px rgba(0,0,0,.18)}
+  .big160{position:absolute;right:120px;top:100px;text-align:right}
+  .big160 .n{font-size:96px;font-weight:900;letter-spacing:-4px;line-height:1}
+  .big160 .t{font-size:22px;font-weight:700;color:var(--sub)}
+
+  /* 6 시연 영상 */
+  #s6 .screen{position:absolute;left:50%;top:60px;bottom:60px;aspect-ratio:9/19.5;transform:translateX(-50%);border-radius:56px;border:12px solid #17191D;overflow:hidden;background:#000;box-shadow:0 30px 90px rgba(0,0,0,.3)}
+  #s6 video,#s6 .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  #s6 video{opacity:0} #s6 video.ready{opacity:1}
+  #s6 .side{position:absolute;right:110px;top:50%;transform:translateY(-50%);width:360px;font-size:44px;font-weight:800;line-height:1.3}
+  #s6 .side small{display:block;font-size:24px;font-weight:600;color:var(--sub);margin-top:14px}
+  #s6 .ph{display:grid;place-items:center;color:#fff;font-size:26px;text-align:center;line-height:1.5;background:linear-gradient(160deg,var(--deep),var(--teal))}
+  #s6 .chap{position:absolute;left:110px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:22px}
+  #s6 .chap div{font-size:32px;font-weight:700;color:#7A818B;transition:color .5s,transform .5s}
+  #s6 .chap div.now{color:var(--deep);transform:translateX(16px)}
+
+  /* 7 안전 */
+  .shields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;margin-top:70px}
+  .shield{border-radius:36px;padding:48px 44px;background:var(--blue100);min-height:470px}
+  .shield .ic{width:96px;height:96px;border-radius:30px;background:#fff;display:grid;place-items:center;margin-bottom:30px}
+  .shield .ic svg{width:56px;height:56px}
+  .shield h3{font-size:40px;line-height:1.35}
+  .shield p{font-size:26px;color:var(--sub);margin-top:14px;line-height:1.5}
+  .check{stroke-dasharray:40;stroke-dashoffset:40;transition:stroke-dashoffset 1s var(--ease) 1.25s}
+  .on .check{stroke-dashoffset:0}
+
+  /* 8 앞으로 */
+  /* 로드맵 */
+  .rm{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:22px;margin-top:90px}
+  .rmline{position:absolute;left:55px;right:calc((100% - 88px) / 5 - 55px);top:51px;height:8px;border-radius:8px;background:var(--lime100)}
+  .rmline i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--deep),var(--lime));transition:width 2.25s var(--ease) .5s}
+  .on .rmline i{width:100%}
+  .rs{position:relative}
+  .rdot{width:110px;height:110px;border-radius:50%;background:#fff;border:6px solid var(--lime100);color:var(--deep);display:grid;place-items:center}
+  .rs.done .rdot{background:var(--deep);border-color:var(--deep);color:#fff}
+  .rs.goal .rdot{background:linear-gradient(140deg,var(--deep),var(--teal));border-color:transparent;color:#fff;box-shadow:0 12px 30px rgba(14,124,87,.35)}
+  .rwhen{margin-top:30px;font-size:22px;font-weight:800;color:var(--deep);letter-spacing:.5px}
+  .rs b{display:block;font-size:40px;margin-top:6px;letter-spacing:-.5px}
+  .rs p{font-size:24px;color:var(--sub);line-height:1.55;margin-top:16px;padding:22px 20px;min-height:150px;border-radius:20px;background:#F6F7F9}
+  .rs.goal p{background:var(--lime50);color:var(--deep);font-weight:700}
+  .rings{position:absolute;right:110px;top:500px;width:700px;height:700px;transform:translateY(-50%)}
+  .ring{position:absolute;left:50%;top:50%;width:var(--r);height:var(--r);margin:calc(var(--r) / -2) 0 0 calc(var(--r) / -2);border-radius:50%;display:flex;justify-content:center}
+  .ring span{margin-top:12px;text-align:center;font-size:18px;color:var(--sub);line-height:1.3} .ring b{display:block;font-size:26px;color:var(--ink)}
+  .ring.r1{background:linear-gradient(140deg,var(--deep),var(--teal));align-items:center} .ring.r1 span{margin:0;color:#D7F5DE} .ring.r1 b{color:#fff;font-size:34px}
+  .ring.r2{background:var(--lime100)} .ring.r3{background:var(--lime50);border:3px solid var(--lime100)} .ring.r4{background:#fff;border:3px dashed var(--lime)}
+  .gsteps{position:absolute;left:110px;bottom:90px;list-style:none;padding:0;display:flex;flex-direction:column;gap:18px;width:560px}
+  .gsteps li{font-size:24px;color:var(--sub);line-height:1.4} .gsteps b{display:block;font-size:22px;color:var(--deep)}
+  .road{position:relative;margin:90px 90px 0;height:300px}
+  .road .bar{position:absolute;left:45px;right:45px;top:40px;height:10px;border-radius:9px;background:var(--lime100)}
+  .road .fill{position:absolute;left:0;top:40px;height:10px;border-radius:9px;background:linear-gradient(90deg,var(--deep),var(--lime));width:0;max-width:calc(100% - 90px);left:45px;transition:width 2.75s var(--ease) .5s}
+  .on .road .fill{width:100%}
+  .stop{position:absolute;top:0;width:300px;margin-left:-150px;text-align:center}
+  .stop .dot{margin:0 auto}
+  .stop .dot{width:90px;height:90px;border-radius:50%;background:#fff;border:8px solid var(--lime100);display:grid;place-items:center;font-size:36px;transition:border-color .5s}
+  .on .stop .dot{border-color:var(--green)}
+  .stop b{display:block;font-size:38px;margin-top:26px} .stop span{display:block;font-size:26px;color:var(--sub);margin-top:6px;line-height:1.4}
+.grow{position:absolute;left:110px;bottom:70px}
+  .grow b{display:block;font-size:24px;color:var(--sub);margin-bottom:14px}
+  .grow div{display:flex;gap:10px;align-items:center}
+  .grow span{font-size:24px;font-weight:700;padding:10px 20px;border-radius:999px;background:#F1F2F4;color:var(--ink)}
+  .grow span.now{background:var(--lime100);color:var(--deep)} .grow i{font-style:normal;font-size:26px;color:var(--mute)}
+  .village{position:absolute;right:90px;bottom:40px;display:flex;gap:6px;align-items:flex-end}
+  .village img{width:230px}
+
+  /* 9 마무리 */
+  #s9{display:flex;flex-direction:column;justify-content:center}
+  #s9 h2{font-size:84px;line-height:1.25}
+  #s9 .ari{position:absolute;right:140px;bottom:90px;width:360px}
+
+
+  /* 고객 */
+  .persona{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:56px}
+  .pc{border-radius:36px;padding:44px;background:var(--lime50);border:3px solid var(--lime100);min-height:500px}
+  .pc.later{background:#fff;border:3px dashed var(--lime)}
+  .pc .tag{display:inline-block;font-size:18px;font-weight:700;color:var(--deep);background:#fff;border-radius:99px;padding:6px 14px}
+  .pc h3{font-size:50px;margin:22px 0 26px}
+  .pc .pain{font-size:27px;color:var(--sub);line-height:1.5;padding-bottom:22px;border-bottom:2px dashed var(--lime100)}
+  .pc .val{font-size:31px;line-height:1.45;margin-top:22px} .pc .val b{color:var(--deep)}
+  /* 시장 */
+  .funnel{margin-top:64px;width:860px;display:flex;flex-direction:column;gap:18px}
+  .fb{width:var(--w);height:120px;border-radius:24px;clip-path:inset(0 100% 0 0 round 24px);transition:clip-path 1.375s var(--ease) .313s;background:linear-gradient(90deg,var(--deep),var(--teal));color:#fff;display:flex;align-items:center;padding:0 34px;white-space:nowrap}
+  .fb.mid{background:linear-gradient(90deg,var(--green),var(--deep))} .fb.end{background:var(--lime100);color:var(--deep)}
+  .on .fb{clip-path:inset(0 0 0 0 round 24px)}
+  .fb > span{font-size:26px;font-weight:600} .fb b{font-size:44px;font-weight:900;margin-right:16px}
+  #sMarket .side{position:absolute;right:110px;top:330px;width:420px;padding:40px;border-radius:36px;background:var(--blue100)}
+  #sMarket .sn{font-size:84px;font-weight:900;letter-spacing:-2px} #sMarket .st{font-size:24px;font-weight:700;color:var(--sub)}
+  #sMarket .side p{font-size:22px;color:var(--sub);line-height:1.5;margin-top:18px}
+  /* 수익 */
+  .plans{display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:28px;margin-top:48px;align-items:stretch}
+  .plan{border-radius:36px;padding:40px 38px;background:#F6F7F9;min-height:370px}
+  .plan.plus{background:linear-gradient(140deg,var(--deep),var(--teal));color:#fff;box-shadow:0 30px 70px rgba(14,124,87,.3)}
+  .plan.later{background:#fff;border:3px dashed var(--lime)}
+  .pn{font-size:38px;font-weight:900} .pn small{font-size:20px;font-weight:700;opacity:.8;margin-left:8px}
+  .plan ul{margin-top:24px;padding-left:24px;font-size:24px;line-height:1.75}
+  #sMoney .note{position:absolute;left:110px;bottom:60px;font-size:24px;font-weight:700;color:var(--deep)}
+  /* 기술 */
+  .tech{display:grid;grid-template-columns:1fr 1fr;gap:70px;margin-top:44px}
+  .tech h3{font-size:30px;margin-bottom:22px;color:var(--deep)}
+  .pipe{display:flex;align-items:center;gap:10px;flex-wrap:nowrap}
+  .pp{font-size:23px;font-weight:700;padding:18px 18px;border-radius:18px;background:#F1F2F4;white-space:nowrap}
+  .pp.guard{background:var(--blue100);color:#1D63C9} .pp.ai{background:var(--lime100);color:var(--deep)}
+  .pipe i{width:18px;height:3px;background:var(--mute);flex:none}
+  .pts{margin-top:36px;padding-left:26px;font-size:26px;line-height:1.8;color:var(--sub)}
+  .team{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  .tm{border-radius:22px;padding:26px 10px;background:#F6F7F9;font-size:17px;color:var(--sub);text-align:center;line-height:1.4}
+  .tm b{display:block;font-size:26px;color:var(--ink);margin-bottom:4px} .tm.me{background:var(--lime100)}
+  .stats{display:flex;gap:40px;margin-top:30px} .stats div{font-size:20px;color:var(--sub);font-weight:600}
+  .stats b{display:block;font-size:76px;font-weight:900;color:var(--ink);letter-spacing:-1px}
+  .stack{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px} .stack span{font-size:20px;font-weight:700;padding:8px 16px;border-radius:99px;border:2px solid var(--line,#E2E5E9);color:var(--sub)}
+
+  #pg{position:fixed;right:18px;bottom:12px;color:#777;font:600 14px Pretendard,sans-serif}
+    /* 발표자 화면의 미리보기: 애니메이션 없이 완성된 모습 */
+  .preview *{transition:none!important;animation:none!important}
+  .preview #pg{display:none}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 0 시작 전 빈 화면 (단색) -->
+  <section class="slide" id="s0"></section>
+
+  <!-- 1 표지 -->
+  <section class="slide" id="s1">
+    <div class="blob" style="width:900px;height:900px;right:-200px;top:-260px;background:var(--lime100)"></div>
+    <div class="pill" style="--r:-18deg;width:420px;height:120px;right:520px;bottom:120px;background:var(--lime);transition-delay:.25s"></div>
+    <div class="pill" style="--r:12deg;width:260px;height:90px;right:80px;bottom:60px;background:var(--sky);transition-delay:.438s"></div>
+    <img class="ari float" data-a="pop" style="transition-delay:.625s" src="img/art/a01/ari-happy.png" alt="아리">
+    <div style="position:relative;margin-top:150px">
+      <div class="kicker" data-a style="transition-delay:.25s">2026 • 바이브벤처</div>
+      <h1 data-a style="transition-delay:.438s">Aries</h1>
+      <p class="lead" data-a style="margin-top:28px;transition-delay:.688s">하루 5분, AI를 <b class="grad">바르게</b> 쓰는 연습</p>
+    </div>
+    <div class="who" data-a style="transition-delay:1s">영남공업고등학교 · 김현성</div>
+  </section>
+
+  <!-- 2 문제 — 이야기 -->
+  <section class="slide" id="s2">
+    <div class="blob" style="width:620px;height:620px;right:-120px;bottom:-200px;background:var(--amber50)"></div>
+    <img class="float" data-a="pop" style="position:absolute;right:90px;bottom:30px;width:270px;transition-delay:.25s" src="img/art/a01/ari-thinking.png" alt="">
+    <div class="kicker" data-a style="transition-delay:.75s">우리가 본 것</div>
+    <div class="line" data-a style="transition-delay:1s">주변 친구들, 부모님, 그리고 많은 사람들이</div>
+    <div class="line" data-a style="transition-delay:1.5s">AI를 그저 <em>유행</em>으로,</div>
+    <div class="line" data-a style="transition-delay:2s">말 잘하는 <em>챗봇</em>으로만 생각하고,</div>
+    <div class="line" data-a style="transition-delay:2.5s">AI가 하는 말을 <em>그대로 믿어요.</em></div>
+    <div class="line end grad" data-a style="transition-delay:3.125s">쓰는 법은 다 아는데, 바르게 쓰는 법은 배운 적이 없어요.</div>
+    <div class="talk">
+      <div class="bub" data-a="pop" style="transition-delay:1.75s">「AI가 그렇다던데?」</div>
+      <div class="bub" data-a="pop" style="transition-delay:2.25s">「숙제 그냥 AI한테 시켰어」</div>
+      <div class="bub" data-a="pop" style="transition-delay:2.75s">「이름이랑 학교 넣어서 물어봤는데?」</div>
+    </div>
+  </section>
+
+  <!-- 3 문제 — 숫자 -->
+  <section class="slide" id="s3">
+    <div class="kicker" data-a>숫자로 보면</div>
+    <h2 data-a style="transition-delay:.188s">이미 다 쓰는데, 배운 적은 없어요</h2>
+    <div class="cards">
+      <div class="card" data-a style="transition-delay:.375s">
+        <div class="num"><span data-count="67.9">0</span>%</div>
+        <div class="cap">중·고등학생이 생성형 AI를<br>써 본 적 있어요</div>
+        <div class="cv"><canvas id="c1"></canvas></div>
+      </div>
+      <div class="card" data-a style="transition-delay:.625s">
+        <div class="num"><span data-count="55.0">0</span>%</div>
+        <div class="cap">청소년이 AI가 준 정보를<br>믿는다고 답했어요</div>
+        <div class="cv"><canvas id="c2"></canvas></div>
+      </div>
+      <div class="card" data-a style="transition-delay:.875s">
+        <div class="num"><span data-count="1.26" data-dec="2">0</span>조 원</div>
+        <div class="cap">2025년 보이스피싱 피해액,<br>1년 만에 47% 늘었어요</div>
+        <div class="cv"><canvas id="c3"></canvas></div>
+      </div>
+    </div>
+    <p class="src">출처: ① 한국청소년정책연구원, 중·고생 5,778명, 2024.5~7 조사(에듀플러스 2025.2.25 보도) ② 한국청소년정책연구원 「청소년 디지털 인재를 어떻게 양성할까」, 중·고생 2,261명, 2023.7~8 조사(경향신문 2024.9.2 보도) ③ 경찰청 자료, 권영진 의원실 분석(아이뉴스24 2026.1 보도): 2025년 1조 2,578억 원, 전년보다 47.2% 증가</p>
+  </section>
+
+  <!-- 4 해결 -->
+  <section class="slide" id="s4">
+    <div class="blob" style="width:700px;height:700px;left:-260px;bottom:-380px;background:var(--lime100)"></div>
+    <div class="kicker" data-a>그래서 만들었어요</div>
+    <h2 data-a style="transition-delay:.188s">게임처럼 매일 하는<br><span class="grad">AI 바르게 쓰기</span> 연습</h2>
+    <div class="words">
+      <div class="word" data-a="pop" style="transition-delay:.5s">하루 5분</div>
+      <div class="word" data-a="pop" style="transition-delay:.688s">게임처럼</div>
+      <div class="word" data-a="pop" style="transition-delay:.875s">중학생 눈높이</div>
+    </div>
+    <div class="phones">
+      <div class="phone" style="right:640px;transform:rotate(-10deg);transition-delay:.75s"><img src="img/ui-shots/03-tab-learn-path.png" alt="학습 지도"></div>
+      <div class="phone" style="right:360px;bottom:60px;z-index:2;transition-delay:1s"><img src="img/ui-shots/07-types-t4-correct.png" alt="레슨"></div>
+      <div class="phone" style="right:80px;transform:rotate(10deg);transition-delay:1.25s"><img src="img/ui-shots/08-streak-milestone-7.png" alt="7일 연속 학습"></div>
+    </div>
+  </section>
+
+  <!-- 5 유형 -->
+  <section class="slide" id="s5">
+    <div class="kicker" data-a>이렇게 배워요</div>
+    <h2 data-a style="transition-delay:.188s">여덟 가지 문제로 연습해요</h2>
+    <div class="big160" data-a="right" style="transition-delay:.375s"><div class="n"><span data-count="160">0</span></div><div class="t">섹션 1 문제 수</div></div>
+    <div class="types">
+      <div class="type" style="--d:0"><div class="in" style="transition-delay:.5s"><b>객관식</b><span>맞는 답 고르기</span></div></div>
+      <div class="type"><div class="in" style="transition-delay:.625s"><b>카드 판정</b><span>위험해? 안전해?</span></div></div>
+      <div class="type"><div class="in" style="transition-delay:.75s"><b>짝 잇기</b><span>선으로 연결</span></div></div>
+      <div class="type"><div class="in" style="transition-delay:.875s"><b>빈칸</b><span>단어 끌어 넣기</span></div></div>
+      <div class="type"><div class="in" style="transition-delay:1s"><b>틀린 문장 찾기</b><span>AI 답 검사</span></div></div>
+      <div class="type"><div class="in" style="transition-delay:1.125s"><b>블록 조립</b><span>좋은 질문 만들기</span></div></div>
+      <div class="type soon"><div class="in" style="transition-delay:1.25s"><b>Live AI 실습 · 곧 나와요</b><span>진짜 AI와 연습</span></div></div>
+      <div class="type chat"><div class="in" style="transition-delay:1.375s"><b>채팅 시뮬레이션</b><span>사기 메시지 대처</span></div></div>
+    </div>
+    <div class="strip">
+      <img data-a style="transition-delay:1.375s" src="img/ui-shots/07-types-t3-correct.png" alt=""><img data-a style="transition-delay:1.5s" src="img/ui-shots/07-types-t4-question.png" alt=""><img data-a style="transition-delay:1.625s" src="img/ui-shots/07-types-t5-question.png" alt=""><img data-a style="transition-delay:1.75s" src="img/ui-shots/07-types-t6-correct.png" alt=""><img data-a style="transition-delay:1.875s" src="img/ui-shots/07-types-t8-question.png" alt=""><img data-a style="transition-delay:2s" src="img/ui-shots/07-types-t2-question.png" alt="">
+    </div>
+  </section>
+
+  <!-- 고객과 가치 -->
+  <section class="slide" id="sCust">
+    <div class="kicker" data-a>누구를 위해</div>
+    <h2 data-a style="transition-delay:.188s">쓰는 사람, 믿고 맡기는 사람</h2>
+    <div class="persona">
+      <div class="pc" data-a style="transition-delay:.438s">
+        <div class="tag">사용자</div><h3>중·고등학생</h3>
+        <p class="pain">숙제·공부에 AI를 쓰지만<br>확인하는 법은 몰라요</p>
+        <p class="val">하루 5분 게임으로<br><b>바르게 쓰는 습관</b></p>
+      </div>
+      <div class="pc" data-a style="transition-delay:.688s">
+        <div class="tag">구독하는 사람</div><h3>학생 · 부모님</h3>
+        <p class="pain"><b>만 14세 이상</b>은 학생 본인이,<br><b>만 14세 미만</b>은 부모님이 구독해요</p>
+        <p class="val">내 성장 리포트 +<br><b>부모님 주간 학습 요약</b></p>
+      </div>
+      <div class="pc later" data-a style="transition-delay:.938s">
+        <div class="tag">다음 고객</div><h3>학교·기관</h3>
+        <p class="pain">AI 윤리·안전 수업 자료와<br>시간이 부족해요</p>
+        <p class="val">수업에 바로 쓰는<br><b>클래스용 Aries</b></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 시연 영상 -->
+  <section class="slide" id="s6">
+    <div class="kicker" data-a>직접 보면</div>
+    <div class="chap" data-a="left" style="transition-delay:.25s">
+      <div data-t="0" class="now">① 학습 지도에서 레슨 시작</div>
+      <div data-t="4.2">② 문제 풀고 바로 피드백</div>
+      <div data-t="10.8">③ 채팅 시뮬레이션: 엄마 사칭 문자</div>
+      <div data-t="22">④ 경험치 · 연속 학습 · 퀘스트</div>
+    </div>
+    <div class="side" data-a="right" style="transition-delay:.625s"><span class="grad">실제 앱</span><br>그대로<small>집에서 폰 화면을 녹화한 영상</small></div>
+    <div class="screen" data-a="pop" style="transition-delay:.375s">
+      <!-- 녹화 영상을 demo.mp4로 넣으면 자동 재생 (C07 뒤 집에서 녹화) -->
+      <video id="demo" src="demo.mp4" muted playsinline preload="auto"></video>
+      <div class="ph" id="demo-ph">시연 영상 자리<br><small>docs/pitch/demo.mp4</small></div>
+    </div>
+  </section>
+
+  <!-- 시장성 -->
+  <section class="slide" id="sMarket">
+    <div class="kicker" data-a>시장</div>
+    <h2 data-a style="transition-delay:.188s">이미 AI를 쓰는 학생만<br><span class="grad">약 181만 명</span></h2>
+    <div class="funnel">
+      <div class="fl" data-a="left" style="transition-delay:.5s"><div class="fb" style="--w:100%"><span><b><span data-count="267">0</span>만 명</b> 전국 중·고등학생</span></div></div>
+      <div class="fl" data-a="left" style="transition-delay:.875s"><div class="fb mid" style="--w:68%"><span><b><span data-count="181">0</span>만 명</b> 생성형 AI를 써 본 학생 (67.9%)</span></div></div>
+      <div class="fl" data-a="left" style="transition-delay:1.25s"><div class="fb end" style="--w:48%"><span><b>첫 목표</b> 대구 중·고생부터</span></div></div>
+    </div>
+    <div class="side" data-a="right" style="transition-delay:1.5s">
+      <div class="sn">10조 원</div>
+      <div class="st">국내 에듀테크 시장(2025 전망)</div>
+      <p>AI 교과서·AI 교육이 늘면서<br>학교와 가정 모두 커지는 시장</p>
+    </div>
+    <p class="src">출처: 교육부·한국교육개발원 2025 교육기본통계(중학생 1,370,356명 + 고등학생 1,299,466명), 한국청소년정책연구원 2024 조사(67.9%), 한국에듀테크산업협회 2022년 전망(2025년 9조 9,833억 원). 181만 명 = 267만 × 67.9%(추정)</p>
+  </section>
+
+  <!-- 수익 모델 -->
+  <section class="slide" id="sMoney">
+    <div class="kicker" data-a>수익 모델</div>
+    <h2 data-a style="transition-delay:.188s">안전 교육은 무료,<br>더 깊은 연습은 <span class="grad">월 구독</span></h2>
+    <div class="plans">
+      <div class="plan" data-a style="transition-delay:.438s">
+        <div class="pn">무료</div>
+        <ul><li>모든 핵심 안전 교육</li><li>매일 레슨·퀘스트·마을</li><li>광고 없음</li></ul>
+      </div>
+      <div class="plan plus" data-a style="transition-delay:.688s">
+        <div class="pn">Aries Plus <small>월 구독</small></div>
+        <ul><li>진짜 AI와 연습하는 Live AI 더 많이</li><li>AI 튜터 아리</li><li>역량별 상세 리포트 · 부모님 주간 요약</li></ul>
+      </div>
+      <div class="plan later" data-a style="transition-delay:.938s">
+        <div class="pn">학교·기관 <small>다음 단계</small></div>
+        <ul><li>클래스 모드 · 교사 대시보드</li><li>학생 단위 라이선스</li></ul>
+      </div>
+    </div>
+    <p class="note" data-a style="transition-delay:1.25s">핵심 안전 교육은 절대 유료로 막지 않아요 — 신뢰가 먼저</p>
+  </section>
+
+  <!-- 기술·AI 활용 -->
+  <section class="slide" id="sTech">
+    <div class="kicker" data-a>기술 · AI 활용</div>
+    <h2 data-a style="transition-delay:.188s">AI를 바르게 쓰는 앱을,<br><span class="grad">AI를 바르게 써서</span> 만들었어요</h2>
+    <div class="tech">
+      <div class="col">
+        <h3 data-a style="transition-delay:.375s">앱 안의 AI</h3>
+        <div class="pipe">
+          <div class="pp" data-a style="transition-delay:.563s">학생 글</div><i data-a style="transition-delay:.688s"></i>
+          <div class="pp guard" data-a style="transition-delay:.813s">개인정보 필터</div><i data-a style="transition-delay:.938s"></i>
+          <div class="pp guard" data-a style="transition-delay:1.063s">유해 내용 검사</div><i data-a style="transition-delay:1.188s"></i>
+          <div class="pp ai" data-a style="transition-delay:1.313s">AI 채점</div>
+        </div>
+        <ul class="pts" data-a style="transition-delay:1.438s"><li>정답이 정해진 문제는 AI 없이 서버가 채점</li><li>점수·보상은 서버가 판정 — 앱을 고쳐도 못 바꿈</li><li>만 14세 미만은 보호자 동의</li></ul>
+      </div>
+      <div class="col">
+        <h3 data-a style="transition-delay:.438s">AI와 함께 만든 방법</h3>
+        <div class="team">
+          <div class="tm me" data-a="pop" style="transition-delay:.75s"><b>나</b>기획 · 결정</div>
+          <div class="tm" data-a="pop" style="transition-delay:.938s"><b>Claude</b>설계 · 검토</div>
+          <div class="tm" data-a="pop" style="transition-delay:1.125s"><b>GPT</b>코드 구현</div>
+          <div class="tm" data-a="pop" style="transition-delay:1.313s"><b>Gemini</b>교차 리뷰</div>
+        </div>
+        <div class="stats" data-a style="transition-delay:1.5s">
+          <div><b><span data-count="1700">0</span>+</b>자동 테스트</div>
+          <div><b><span data-count="130">0</span></b>기록한 결정</div>
+        </div>
+        <div class="stack" data-a style="transition-delay:1.688s"><span>React Native · Expo</span><span>NestJS</span><span>Firebase</span><span>TypeScript</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 앞으로 -->
+  <section class="slide" id="s8">
+    <div class="kicker" data-a>제품 로드맵</div>
+    <h2 data-a style="transition-delay:.188s">곧 만날 Aries</h2>
+    <div class="road">
+      <div class="bar"></div><div class="fill"></div>
+      <div class="stop" style="left:45px"><div class="dot"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#2B8636" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><b>지금</b><span>레슨 · 채팅 시뮬레이션</span></div>
+      <div class="stop" style="left:calc(45px + (100% - 90px) / 3)"><div class="dot"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#2B8636" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="#2B8636"/></svg></div><b>진단 미션</b><span>AI가 내 실력을 채점</span></div>
+      <div class="stop" style="left:calc(45px + (100% - 90px) * 2 / 3)"><div class="dot"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#2B8636" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11L12 4l8.5 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></svg></div><b>마을 꾸미기</b><span>별조각으로 나만의 마을</span></div>
+      <div class="stop" style="left:calc(100% - 45px)"><div class="dot"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#2B8636" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15l-3-3c1.2-4.5 4.6-7.6 10-8.5-.9 5.4-4 8.8-8.5 10z"/><path d="M9 12l-3.5.5L4 15l4 1M12 15l-.5 3.5L9 20l-1-4"/><circle cx="15" cy="8.5" r="1.3"/></svg></div><b>12월 베타</b><span>친구들과 함께</span></div>
+    </div>
+    <div class="village" data-a="right" style="transition-delay:1.5s">
+      <img src="img/art/village/village-building-home-lv1.png" alt=""><img src="img/art/village/village-building-library-lv1.png" alt=""><img src="img/art/village/village-building-cafe-lv1.png" alt="">
+    </div>
+  </section>
+
+  <!-- 성장 로드맵 (2장 버전) -->
+  <section class="slide" id="sGrow">
+    <div class="kicker" data-a>성장 로드맵</div>
+    <h2 data-a style="transition-delay:.188s">학생에서 시작해,<br><span class="grad">AI를 쓰는 모든 사람에게</span></h2>
+    <div class="rings">
+      <div class="ring r4" data-a="pop" style="--r:700px;transition-delay:1.188s"><span><b>모두에게</b>선생님 · 회사원</span></div>
+      <div class="ring r3" data-a="pop" style="--r:530px;transition-delay:.938s"><span><b>가정으로</b>학부모 · 초등 고학년</span></div>
+      <div class="ring r2" data-a="pop" style="--r:370px;transition-delay:.688s"><span><b>학교로</b>2027 이후 · 클래스 모드</span></div>
+      <div class="ring r1" data-a="pop" style="--r:215px;transition-delay:.438s"><span><b>중·고등 학생</b>2027 상반기 정식 출시</span></div>
+    </div>
+    <ul class="gsteps">
+      <li data-a style="transition-delay:.625s"><b>2027 상반기</b>Plus 월 구독으로 정식 출시</li>
+      <li data-a style="transition-delay:.875s"><b>2027 이후</b>학교·기관 라이선스</li>
+      <li data-a style="transition-delay:1.125s"><b>그다음</b>초등 고학년 · 학부모 · 선생님 · 회사원</li>
+    </ul>
+  </section>
+
+  <!-- 9 마무리 -->
+  <section class="slide" id="s9">
+    <div class="blob" style="width:820px;height:820px;right:-180px;bottom:-260px;background:var(--lime100)"></div>
+    <div style="position:relative">
+      <h2 data-a style="transition-delay:.25s">AI를 <span style="color:var(--mute)">잘 쓰는 사람</span>보다,<br><span class="grad">바르게 쓰는 사람</span></h2>
+      <p class="lead" data-a style="margin-top:40px;transition-delay:.875s">감사합니다 · Aries</p>
+    </div>
+    <img class="ari float" data-a="pop" style="transition-delay:.625s" src="img/art/a01/ari-cheer.png" alt="아리">
+  </section>
+
+  <!-- 질의응답 -->
+  <section class="slide" id="sQA">
+    <div class="blob" style="width:820px;height:820px;right:-220px;bottom:-300px;background:var(--lime100)"></div>
+    <div class="pill" style="--r:-14deg;width:340px;height:100px;left:120px;bottom:120px;background:var(--lime);transition-delay:.375s"></div>
+    <div style="position:relative;margin-top:170px">
+      <div class="kicker" data-a style="transition-delay:.125s">Q &amp; A</div>
+      <h1 data-a style="transition-delay:.313s;font-size:130px">질문 있으신가요?</h1>
+      <p class="lead" data-a style="margin-top:30px;transition-delay:.563s">편하게 물어봐 주세요</p>
+    </div>
+    <img class="float" data-a="pop" style="position:absolute;right:170px;top:200px;width:430px;transition-delay:.625s" src="img/art/a01/ari-celebrate.png" alt="아리">
+  </section>
+
+  <!-- 끝: 검은 단색 -->
+  <section class="slide" id="sEnd" style="background:#000"></section>
+
+
+</div>
+<div id="pg"></div>
+
+<script src="vendor/chart.umd.min.js"></script>
+<script>
+(() => {
+  const stage = document.getElementById('stage');
+  // 무대는 두 가지: 16:9(1600×900, TV) / 16:10(1600×1000, 노트북). 화면 비율로 더 가까운 쪽을 고르고, 남는 곳은 흰 여백
+  let ratio = '16:9';
+  const fit = () => {
+    ratio = innerWidth / innerHeight < 1.7 ? '16:10' : '16:9';
+    const h = ratio === '16:10' ? 1000 : 900;
+    stage.style.height = h + 'px';
+    const s = Math.min(innerWidth / 1600, innerHeight / h);
+    stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+    if (!preview) tell({ type: 'ratio', ratio });
+  };
+  addEventListener('resize', fit);
+
+  const slides = [...document.querySelectorAll('.slide')];
+  let cur = -1, charts = [];
+  const C = { deep: '#2B8636', lime: '#8BD450', lime100: '#E4F6D3', amber: '#F5B565', mute: '#C9CED4', teal: '#0E7C57' };
+  Chart.defaults.font.family = 'Pretendard'; Chart.defaults.font.size = 20; Chart.defaults.color = '#4D5560';
+
+  const countUp = (el) => {
+    const to = +el.dataset.count, dec = +(el.dataset.dec ?? (String(el.dataset.count).includes('.') ? 1 : 0));
+    if (preview) { el.textContent = to.toFixed(dec); return; }
+    const t0 = performance.now(), dur = 2000, run = el.dataset.run;
+    const step = (t) => { if (el.dataset.run !== run) return; const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = (to * e).toFixed(dec); if (p < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  };
+
+  // Chart.js가 options 안 함수를 스크립트 옵션으로 호출하므로 형식 함수는 옵션 밖에 둠
+  const FMT = { c2: (v) => v.toFixed(1) + '%', c3: (v) => (v >= 10000 ? (v / 10000).toFixed(2) + '조' : v.toLocaleString() + '억') };
+  const valueLabels = { id: 'valueLabels', afterDatasetsDraw(chart) { const fmt = FMT[chart.canvas.id]; if (!fmt || chart.$out) return; const { ctx } = chart; ctx.save(); ctx.font = '800 22px Pretendard'; ctx.fillStyle = '#17191D'; ctx.textAlign = 'center'; chart.getDatasetMeta(0).data.forEach((el, i) => ctx.fillText(fmt(chart.data.datasets[0].data[i]), el.x, el.y - 12)); ctx.restore(); } };
+  const makeCharts = () => {
+    charts.forEach((c) => c.destroy()); charts = [];
+    const anim = preview ? { duration: 0 } : { duration: 2000, easing: 'easeOutQuart' };
+    charts.push(new Chart(document.getElementById('c1'), {
+      type: 'doughnut',
+      data: { labels: ['써 봤어요', '안 써 봤어요'], datasets: [{ data: [67.9, 32.1], backgroundColor: [C.deep, C.lime100], borderWidth: 0 }] },
+      options: { cutout: '68%', maintainAspectRatio: false, animation: { ...anim, animateRotate: true }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 18, padding: 18 } } } },
+    }));
+    charts.push(new Chart(document.getElementById('c2'), {
+      type: 'bar',
+      data: { labels: ['믿어요', '그 밖'], datasets: [{ data: [55.0, 45.0], backgroundColor: [C.amber, C.mute], borderRadius: 14 }] },
+      options: { maintainAspectRatio: false, layout: { padding: { top: 34 } }, animation: { ...anim, delay: (c) => c.dataIndex * 310 }, plugins: { legend: { display: false }}, scales: { y: { display: false, max: 70 }, x: { grid: { display: false }, border: { display: false } } } }, plugins: [valueLabels],
+    }));
+    charts.push(new Chart(document.getElementById('c3'), {
+      type: 'bar',
+      data: { labels: ['2023', '2024', '2025'], datasets: [{ data: [4472, 8545, 12578], backgroundColor: [C.mute, C.amber, '#E07B39'], borderRadius: 14 }] },
+      options: { maintainAspectRatio: false, layout: { padding: { top: 34 } }, animation: { ...anim, delay: (c) => c.dataIndex * 375 }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => c.raw.toLocaleString() + '억 원' } } }, scales: { y: { display: false }, x: { grid: { display: false }, border: { display: false } } } }, plugins: [valueLabels],
+    }));
+  };
+
+  const demo = document.getElementById('demo'), ph = document.getElementById('demo-ph');
+  demo.addEventListener('loadeddata', () => { ph.style.display = 'none'; demo.classList.add('ready'); });
+  demo.addEventListener('timeupdate', () => {
+    const items = [...document.querySelectorAll('#s6 .chap div')];
+    let now = 0; items.forEach((d, i) => { if (demo.currentTime >= +d.dataset.t) now = i; });
+    items.forEach((d, i) => d.classList.toggle('now', i === now));
+  });
+
+  const preview = new URLSearchParams(location.search).has('preview');
+  if (preview) document.documentElement.classList.add('preview');
+  const tell = (msg) => { try { window.opener?.postMessage(msg, '*'); } catch (e) {} };
+  addEventListener('message', (e) => { const d = e.data || {}; if (d.type === 'go') go(d.n); if (d.type === 'fs') document.documentElement.requestFullscreen?.(); });
+  const OUT_SPEED = 0.29; // 나갈 때는 들어올 때 시간의 29% (순서는 정반대). 들어올 때를 1.25배 느리게 한 뒤에도 나가는 시간은 그대로(2026-10-24)
+  const secs = (v) => Math.max(...v.split(',').map((x) => parseFloat(x) * (x.trim().endsWith('ms') ? 0.001 : 1)));
+  const planOut = (slide) => {
+    const items = [...slide.querySelectorAll('*')].map((el) => { const cs = getComputedStyle(el); return { el, d: secs(cs.transitionDelay), t: secs(cs.transitionDuration), od: el.style.transitionDelay, ot: el.style.transitionDuration }; }).filter((x) => x.t > 0);
+    // 그래프·숫자도 들어올 때 시간표에 넣음(숫자 0.5s 뒤 1.6s, 그래프 0.6s 뒤 최대 2.2s) → 나갈 때 정반대 순서로 줄어듦
+    const extra = [];
+    if (slide.querySelector('[data-count]')) extra.push({ kind: 'count', d: 0.625, t: 2 });
+    if (slide.id === 's3' && charts.length) extra.push({ kind: 'chart', d: 0.75, t: 2.75 });
+    const end = Math.max(0, ...items.map((x) => x.d + x.t), ...extra.map((x) => x.d + x.t));
+    const timers = extra.map((x) => setTimeout(() => {
+      const dur = x.t * OUT_SPEED * 1000;
+      if (x.kind === 'chart') charts.forEach((c) => { c.$out = true; c.data.datasets.forEach((d) => { d.data = d.data.map(() => 0); }); c.options.animation = { duration: dur, easing: 'easeInQuart' }; c.update(); });
+      if (x.kind === 'count') slide.querySelectorAll('[data-count]').forEach((el) => {
+        const from = parseFloat(el.textContent) || 0, dec = (el.textContent.split('.')[1] || '').length, t0 = performance.now(), run = el.dataset.run;
+        const step = (t) => { if (el.dataset.run !== run) return; const p = Math.min(1, (t - t0) / dur); el.textContent = (from * (1 - p * p * p)).toFixed(dec); if (p < 1) requestAnimationFrame(step); };
+        requestAnimationFrame(step);
+      });
+    }, (end - x.d - x.t) * OUT_SPEED * 1000));
+    items.forEach(({ el, d, t }) => { el.style.setProperty('transition-delay', ((end - d - t) * OUT_SPEED).toFixed(3) + 's', 'important'); el.style.setProperty('transition-duration', (t * OUT_SPEED).toFixed(3) + 's', 'important'); });
+    return { ms: end * OUT_SPEED * 1000, clear: () => { timers.forEach(clearTimeout); // 원래 HTML에 적힌 지연(style="transition-delay:…")은 되돌려 놓아야 다음에 들어올 때 하나씩 나옴
+      items.forEach(({ el, od, ot }) => { el.style.removeProperty('transition-delay'); el.style.removeProperty('transition-duration'); if (od) el.style.transitionDelay = od; if (ot) el.style.transitionDuration = ot; }); } };
+  };
+  let outPlan = null;
+  const go = (n) => {
+    n = Math.max(0, Math.min(slides.length - 1, n)); if (n === cur) return;
+    clearTimeout(go.t1); clearTimeout(go.t2); clearTimeout(go.t3);
+    const old = slides[cur];
+    slides.forEach((x) => x.classList.remove('leaving'));
+    if (outPlan) { outPlan.clear(); outPlan = null; }
+    if (old && !preview) {
+      outPlan = planOut(old);
+      // 나가는 장: 원·카드·막대가 줄어들며 사라짐. 그래프는 0으로 내려감
+      old.classList.add('leaving'); old.classList.remove('on');
+    }
+    const enter = () => {
+      if (old) old.classList.remove('leaving');
+      if (outPlan) { outPlan.clear(); outPlan = null; }
+      document.querySelectorAll('[data-count]').forEach((el) => { el.dataset.run = +(el.dataset.run || 0) + 1; el.textContent = '0'; });
+      charts.forEach((c) => c.destroy()); charts = [];
+      slides.forEach((x, i) => x.classList.toggle('on', i === n));
+      startSlide(n);
+    };
+    cur = n; document.getElementById('pg').textContent = n === 0 ? '' : `${n} / ${slides.length - 1}`;
+    if (old && !preview) go.t3 = setTimeout(enter, Math.min(1800, outPlan.ms)); else enter();
+    if (!preview) { history.replaceState(null, '', '#' + (n + 1)); tell({ type: 'at', n, total: slides.length, ratio }); }
+  };
+  const startSlide = (n) => {
+    const s = slides[n];
+    go.t1 = setTimeout(() => s.querySelectorAll('[data-count]').forEach(countUp), preview ? 0 : 625);
+    if (s.id === 's3') go.t2 = setTimeout(makeCharts, preview ? 0 : 750);
+    if (s.id === 's6' && !preview) { demo.currentTime = 0; demo.play().catch(() => {}); } else demo.pause();
+  };
+  addEventListener('keydown', (e) => { if (preview) return;
+    if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) go(cur + 1);
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) go(cur - 1);
+    if (e.key === 'f') document.documentElement.requestFullscreen?.();
+  });
+  addEventListener('click', (e) => { if (!preview) go(cur + (e.clientX > innerWidth / 3 ? 1 : -1)); });
+  fit();
+  go((parseInt(location.hash.slice(1)) || 1) - 1);
+  addEventListener('hashchange', () => go((parseInt(location.hash.slice(1)) || 1) - 1));
+})();
+</script>
+</body>
+</html>
