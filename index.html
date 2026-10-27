@@ -508,6 +508,8 @@
 
   // 숫자·그래프는 자기 카드가 다 들어온 뒤(카드 지연 + ARRIVE) 시작해야 올라가는 게 보임
   const COUNT_MS = 2000, COUNT_AT = 0.625, CHART_MS = 1100, ARRIVE = 0.5;
+  // 늦게 나타나는 숫자(10장 통계 등)는 반쯤 보인 뒤(나타나기 시작 + 0.3초)부터 올라감
+  const countStart = (el) => (ownDelay(el) > 2 ? ownDelay(el) + 0.3 : COUNT_AT);
   const ownDelay = (el) => { const a = el.closest('[data-a]'); const v = a ? parseFloat(a.style.transitionDelay) : 0; return Number.isFinite(v) ? v : 0; };
   // Chart.js가 options 안 함수를 스크립트 옵션으로 호출하므로 형식 함수는 옵션 밖에 둠
   const FMT = { c2: (v) => v.toFixed(1) + '%', c3: (v) => (v >= 10000 ? (v / 10000).toFixed(2) + '조' : v.toLocaleString() + '억') };
@@ -550,7 +552,7 @@
     // 그래프·숫자도 들어올 때 시간표에 넣음(숫자 0.5s 뒤 1.6s, 그래프 0.6s 뒤 최대 2.2s) → 나갈 때 정반대 순서로 줄어듦
     const extra = [];
     const counts = [...slide.querySelectorAll('[data-count]')];
-    if (counts.length) extra.push({ kind: 'count', d: COUNT_AT, t: COUNT_MS / 1000 });
+    if (counts.length) extra.push({ kind: 'count', d: Math.max(...counts.map(countStart)), t: COUNT_MS / 1000 });
     if (slide.id === 's3' && charts.length) extra.push({ kind: 'chart', d: Math.max(...slide.querySelectorAll('canvas').length ? [...slide.querySelectorAll('canvas')].map(ownDelay) : [0]) + ARRIVE, t: CHART_MS / 1000 + 0.5 });
     const end = Math.max(0, ...items.map((x) => x.d + x.t), ...extra.map((x) => x.d + x.t));
     const timers = extra.map((x) => setTimeout(() => {
@@ -593,7 +595,8 @@
   const startSlide = (n) => {
     const s = slides[n];
     const later = (fn, sec) => go.ts.push(setTimeout(fn, preview ? 0 : sec * 1000));
-    later(() => s.querySelectorAll('[data-count]').forEach(countUp), COUNT_AT);
+    // 숫자는 장이 열리고 COUNT_AT 뒤, 단 자기가 늦게 나타나는 요소(10장 통계 등)는 나타나는 순간부터 올라감
+    s.querySelectorAll('[data-count]').forEach((el) => later(() => countUp(el), countStart(el)));
     if (s.id === 's3') s.querySelectorAll('canvas').forEach((cv) => later(() => charts.push(CHARTS[cv.id]()), ownDelay(cv) + ARRIVE));
     if (s.id === 's6' && !preview) { demo.currentTime = 0; demo.play().catch(() => {}); } else demo.pause();
   };
