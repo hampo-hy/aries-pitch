@@ -507,7 +507,7 @@
   };
 
   // 숫자·그래프는 자기 카드가 다 들어온 뒤(카드 지연 + ARRIVE) 시작해야 올라가는 게 보임
-  const COUNT_MS = 300, COUNT_AT = 0.625, CHART_MS = 1100, ARRIVE = 0.5;
+  const COUNT_MS = 500, COUNT_AT = 0.625, CHART_MS = 1100, ARRIVE = 0.5;
   // 늦게 나타나는 숫자(10장 통계 등)는 나타나기 시작하는 순간 함께 올라감(다른 장처럼 0에 멈춰 보이지 않게)
   const countStart = (el) => (ownDelay(el) > 2 ? ownDelay(el) : COUNT_AT);
   const ownDelay = (el) => { const a = el.closest('[data-a]'); const v = a ? parseFloat(a.style.transitionDelay) : 0; return Number.isFinite(v) ? v : 0; };
