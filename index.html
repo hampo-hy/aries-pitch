@@ -27,6 +27,7 @@
   [data-a="left"]{transform:translateX(-120px)} [data-a="up"]{transform:translateY(120px)} [data-a="bounce"]{transform:scale(.3)} [data-a="right"]{transform:translateX(160px)} [data-a="pop"]{transform:scale(.6)}
   .on [data-a]{opacity:1;transform:none}
   [data-a="bounce"]{transition:opacity .4s var(--ease),transform .6s cubic-bezier(.34,1.56,.64,1)}
+  [data-a="grow"]{transform:scale(.85);transition:opacity .25s var(--ease),transform .4s cubic-bezier(.34,1.56,.64,1)}
   .slide:not(.on):not(.leaving) *,.slide:not(.on):not(.leaving) *::before{transition-duration:0s!important;transition-delay:0s!important;animation-play-state:paused}
   /* 나가는 애니메이션: 들어올 때의 반대로, 빠르게 한꺼번에(지연 없음) */
   .slide.leaving{opacity:1;transition:none}
@@ -34,17 +35,15 @@
   /* 배경 도형 */
   .blob{position:absolute;border-radius:50%;filter:blur(0);opacity:0;transform:scale(.12);transition:opacity 1s var(--ease),transform 1.4s var(--ease)}
   .on .blob{opacity:1;transform:scale(1)}
-  .pill{position:absolute;border-radius:999px;opacity:0;transform:translateX(200px) rotate(var(--r,0deg));transition:opacity 1s var(--ease),transform 1.3s var(--ease)}
-  .on .pill{opacity:1;transform:translateX(0) rotate(var(--r,0deg))}
   h1{font-size:150px;font-weight:900;letter-spacing:-4px;line-height:1}
   h2{font-size:64px;font-weight:800;letter-spacing:-1.5px;line-height:1.15}
   h3{font-size:30px;font-weight:700}
-  .kicker{font-size:22px;font-weight:700;letter-spacing:1px;color:var(--deep);text-transform:uppercase;margin-bottom:20px}
+  .kicker{font-size:22px;font-weight:700;letter-spacing:1px;color:var(--sub);text-transform:uppercase;margin-bottom:20px}
   .lead{font-size:34px;font-weight:600;color:var(--sub);line-height:1.45}
   .src{position:absolute;left:110px;right:110px;bottom:30px;font-size:16px;color:#6B727C;line-height:1.5}
   .float{animation:float 4s ease-in-out infinite}
   @keyframes float{50%{transform:translateY(-18px)}}
-  .grad{background:linear-gradient(120deg,var(--deep),var(--teal) 60%,var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .grad{color:var(--deep)}
 
   /* 1 표지 */
   #s1 .who{position:absolute;left:110px;bottom:90px;font-size:28px;font-weight:600;color:var(--sub)}
@@ -52,7 +51,7 @@
 
   /* 2 문제 — 이야기 */
   #s2 .line{position:relative;z-index:1;font-size:50px;font-weight:800;line-height:1.35;letter-spacing:-1px}
-  #s2 .line em{font-style:normal;padding:0 10px;border-radius:12px;background:linear-gradient(transparent 55%,var(--amber) 55%)}
+  #s2 .line em{font-style:normal;padding:0 10px;border-radius:12px;background:linear-gradient(transparent 55%,var(--lime100) 55%)}
   #s2 .end{margin-top:46px;font-size:54px}
   #s2 .talk{z-index:1;position:absolute;left:110px;bottom:70px;display:flex;gap:16px;flex-wrap:wrap;max-width:1180px}
   #s2 .bub{font-size:26px;font-weight:700;color:var(--sub);background:#F1F2F4;padding:16px 26px;border-radius:28px 28px 28px 8px}
@@ -67,6 +66,8 @@
   /* 4 해결 */
   .words{display:flex;gap:28px;margin-top:30px}
   .word{font-size:46px;font-weight:800;padding:18px 34px;border-radius:999px;background:var(--lime100);color:var(--deep)}
+  .diff{font-size:28px;color:var(--sub);line-height:1.5;margin-top:44px;width:520px}
+  .diff b{color:var(--ink)}
   .phones{position:absolute;left:0;right:0;bottom:-160px;height:620px}
   .phone{position:absolute;bottom:0;width:300px;border-radius:44px;border:10px solid #17191D;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.25);background:#fff;transition:transform 1.2s var(--ease),opacity .8s}
   .phone img{display:block;width:100%}
@@ -77,9 +78,9 @@
   .type{perspective:900px;height:124px}
   .type .in{height:100%;border-radius:28px;background:var(--lime50);border:3px solid var(--lime100);padding:18px 22px;display:flex;flex-direction:column;justify-content:space-between;transform:rotateX(90deg);transform-origin:top;opacity:0;backface-visibility:hidden;transition:transform .8s var(--ease),opacity .25s linear}
   .on .type .in{transform:none;opacity:1}
-  .type b{font-size:18px;color:var(--deep)} .type span{font-size:25px;font-weight:800}
+  .type b{font-size:18px;color:var(--sub)} .type span{font-size:25px;font-weight:800}
   .type.soon .in{background:#fff;border:3px dashed var(--lime)}
-  .type.chat .in{background:linear-gradient(135deg,var(--deep),var(--teal));border-color:transparent;color:#fff}
+  .type.chat .in{background:var(--deep);border-color:transparent;color:#fff}
   .type.chat b{color:#CFF3D8}
   .strip{position:absolute;left:110px;right:110px;bottom:-110px;display:flex;gap:44px;justify-content:center}
   .strip img{flex:1;min-width:0;max-width:185px;border-radius:24px;border:7px solid #17191D;box-shadow:0 20px 50px rgba(0,0,0,.18)}
@@ -93,14 +94,14 @@
   #s6 video{opacity:0} #s6 video.ready{opacity:1}
   #s6 .side{position:absolute;right:110px;top:50%;transform:translateY(-50%);width:360px;font-size:44px;font-weight:800;line-height:1.3}
   #s6 .side small{display:block;font-size:24px;font-weight:600;color:var(--sub);margin-top:14px}
-  #s6 .ph{display:grid;place-items:center;color:#fff;font-size:26px;text-align:center;line-height:1.5;background:linear-gradient(160deg,var(--deep),var(--teal))}
+  #s6 .ph{display:grid;place-items:center;color:#fff;font-size:26px;text-align:center;line-height:1.5;background:var(--deep)}
   #s6 .chap{position:absolute;left:110px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:22px}
   #s6 .chap div{font-size:32px;font-weight:700;color:#7A818B;transition:color .5s,transform .5s}
   #s6 .chap div.now{color:var(--deep);transform:translateX(16px)}
 
   /* 7 안전 */
   .shields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;margin-top:70px}
-  .shield{border-radius:36px;padding:48px 44px;background:var(--blue100);min-height:470px}
+  .shield{border-radius:36px;padding:48px 44px;background:#F3F4F6;min-height:470px}
   .shield .ic{width:96px;height:96px;border-radius:30px;background:#fff;display:grid;place-items:center;margin-bottom:30px}
   .shield .ic svg{width:56px;height:56px}
   .shield h3{font-size:40px;line-height:1.35}
@@ -112,12 +113,12 @@
   /* 로드맵 */
   .rm{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:22px;margin-top:90px}
   .rmline{position:absolute;left:55px;right:calc((100% - 88px) / 5 - 55px);top:51px;height:8px;border-radius:8px;background:var(--lime100)}
-  .rmline i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--deep),var(--lime));transition:width 1.8s var(--ease) .3s}
+  .rmline i{display:block;height:100%;width:0;border-radius:8px;background:var(--deep);transition:width 1.8s var(--ease) .3s}
   .on .rmline i{width:100%}
   .rs{position:relative}
   .rdot{width:110px;height:110px;border-radius:50%;background:#fff;border:6px solid var(--lime100);color:var(--deep);display:grid;place-items:center}
   .rs.done .rdot{background:var(--deep);border-color:var(--deep);color:#fff}
-  .rs.goal .rdot{background:linear-gradient(140deg,var(--deep),var(--teal));border-color:transparent;color:#fff;box-shadow:0 12px 30px rgba(14,124,87,.35)}
+  .rs.goal .rdot{background:var(--deep);border-color:transparent;color:#fff}
   .rwhen{margin-top:30px;font-size:22px;font-weight:800;color:var(--deep);letter-spacing:.5px}
   .rs b{display:block;font-size:40px;margin-top:6px;letter-spacing:-.5px}
   .rs p{font-size:24px;color:var(--sub);line-height:1.55;margin-top:16px;padding:22px 20px;min-height:150px;border-radius:20px;background:#F6F7F9}
@@ -125,14 +126,14 @@
   .rings{position:absolute;right:110px;top:500px;width:700px;height:700px;transform:translateY(-50%)}
   .ring{position:absolute;left:50%;top:50%;width:var(--r);height:var(--r);margin:calc(var(--r) / -2) 0 0 calc(var(--r) / -2);border-radius:50%;display:flex;justify-content:center}
   .ring span{margin-top:12px;text-align:center;font-size:18px;color:var(--sub);line-height:1.3} .ring b{display:block;font-size:26px;color:var(--ink)}
-  .ring.r1{background:linear-gradient(140deg,var(--deep),var(--teal));align-items:center} .ring.r1 span{margin:0;color:#D7F5DE} .ring.r1 b{color:#fff;font-size:34px}
+  .ring.r1{background:var(--deep);align-items:center} .ring.r1 span{margin:0;color:#D7F5DE} .ring.r1 b{color:#fff;font-size:34px}
   .ring.r2{background:var(--lime100)} .ring.r3{background:var(--lime50);border:3px solid var(--lime100)} .ring.r4{background:#fff;border:3px dashed var(--lime)}
   .gsteps{position:absolute;left:110px;bottom:90px;list-style:none;padding:0;display:flex;flex-direction:column;gap:18px;width:560px}
-  .gsteps li{font-size:24px;color:var(--sub);line-height:1.4} .gsteps b{display:block;font-size:22px;color:var(--deep)}
+  .gsteps li{font-size:24px;color:var(--sub);line-height:1.4} .gsteps b{display:block;font-size:22px;color:var(--ink)}
   .road{position:relative;margin:90px 90px 0;height:300px}
   .road .bar{position:absolute;left:45px;width:0;top:40px;height:10px;border-radius:9px;background:var(--lime100);transition:width 1.44s linear .36s}
   .on .road .bar{width:calc(100% - 90px)}
-  .road .fill{position:absolute;left:0;top:40px;height:10px;border-radius:9px;background:linear-gradient(90deg,var(--deep),var(--lime));width:0;max-width:calc(100% - 90px);left:45px;transition:width 1.44s linear .36s}
+  .road .fill{position:absolute;left:0;top:40px;height:10px;border-radius:9px;background:var(--deep);width:0;max-width:calc(100% - 90px);left:45px;transition:width 1.44s linear .36s}
   .on .road .fill{width:calc(100% - 90px)}
   .stop{position:absolute;top:0;width:300px;margin-left:-150px;text-align:center}
   .stop .dot{margin:0 auto}
@@ -144,6 +145,7 @@
   .grow div{display:flex;gap:10px;align-items:center}
   .grow span{font-size:24px;font-weight:700;padding:10px 20px;border-radius:999px;background:#F1F2F4;color:var(--ink)}
   .grow span.now{background:var(--lime100);color:var(--deep)} .grow i{font-style:normal;font-size:26px;color:var(--mute)}
+  .reach{position:absolute;left:110px;bottom:96px;font-size:26px;color:var(--sub);line-height:1.5} .reach b{color:var(--ink)}
   .village{position:absolute;right:90px;bottom:40px;display:flex;gap:6px;align-items:flex-end}
   .village img{width:230px}
 
@@ -163,50 +165,94 @@
   .pc .val{font-size:31px;line-height:1.45;margin-top:22px} .pc .val b{color:var(--deep)}
   /* 시장 */
   .funnel{margin-top:64px;width:860px;display:flex;flex-direction:column;gap:18px}
-  .fb{width:var(--w);height:120px;border-radius:24px;clip-path:inset(0 100% 0 0 round 24px);transition:clip-path 1.1s var(--ease) .19s;background:linear-gradient(90deg,var(--deep),var(--teal));color:#fff;display:flex;align-items:center;padding:0 34px;white-space:nowrap}
-  .fb.mid{background:linear-gradient(90deg,var(--green),var(--deep))} .fb.end{background:var(--lime100);color:var(--deep);width:max-content;min-width:var(--w)} /* 글자 오른쪽도 왼쪽과 같은 34px 여백 */
+  .fb{width:var(--w);height:120px;border-radius:24px;clip-path:inset(0 100% 0 0 round 24px);transition:clip-path 1.1s var(--ease) .19s;background:var(--deep);color:#fff;display:flex;align-items:center;padding:0 34px;white-space:nowrap}
+  .fb.mid{background:#6ABB35} .fb.end{background:var(--lime100);color:var(--deep);width:max-content;min-width:var(--w)} /* 글자 오른쪽도 왼쪽과 같은 34px 여백 */
   .on .fb{clip-path:inset(0 0 0 0 round 24px)}
   .fb > span{font-size:26px;font-weight:600} .fb b{font-size:44px;font-weight:900;margin-right:16px}
-  #sMarket .side{position:absolute;right:110px;top:330px;width:420px;padding:40px;border-radius:36px;background:var(--blue100)}
-  #sMarket .sn{font-size:84px;font-weight:900;letter-spacing:-2px} #sMarket .st{font-size:24px;font-weight:700;color:var(--sub)}
-  #sMarket .side p{font-size:22px;color:var(--sub);line-height:1.5;margin-top:18px}
+  #sMarket .side{position:absolute;right:110px;top:347px;height:396px;width:420px;padding:40px;border-radius:36px;background:var(--blue100);display:flex;flex-direction:column;justify-content:center} /* 왼쪽 막대 3개와 위·아래를 맞춤 */
+  #sMarket .sn{font-size:84px;font-weight:900;letter-spacing:-2px} #sMarket .st{font-size:24px;font-weight:700;color:var(--sub);margin-top:22px}
+  #sMarket .side p{font-size:22px;color:var(--sub);line-height:1.6;margin-top:56px}
   /* 수익 */
   .plans{display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:28px;margin-top:48px;align-items:stretch}
   .plan{border-radius:36px;padding:40px 38px;background:#F6F7F9;min-height:370px}
-  .plan.plus{background:linear-gradient(140deg,var(--deep),var(--teal));color:#fff;box-shadow:0 30px 70px rgba(14,124,87,.3)}
+  .plan.plus{background:var(--deep);color:#fff}
   .plan.later{background:#fff;border:3px dashed var(--lime)}
   .pn{font-size:38px;font-weight:900} .pn small{font-size:20px;font-weight:700;opacity:.8;margin-left:8px}
+  .pr{font-size:30px;font-weight:900;margin-top:14px} .pr small{font-size:19px;font-weight:700;opacity:.75;margin-left:8px}
   .plan ul{margin-top:24px;padding-left:24px;font-size:24px;line-height:1.75}
-  #sMoney .note{position:absolute;left:110px;bottom:60px;font-size:24px;font-weight:700;color:var(--deep)}
+  #sMoney .note{position:absolute;left:110px;bottom:60px;font-size:24px;font-weight:700;color:var(--ink)}
   /* 기술 */
   .tech{display:grid;grid-template-columns:1fr 1fr;gap:70px;margin-top:44px}
   .tech h3{font-size:30px;margin-bottom:22px;color:var(--deep)}
-  .pipe{display:flex;align-items:center;gap:10px;flex-wrap:nowrap}
-  .pp{font-size:23px;font-weight:700;padding:18px 18px;border-radius:18px;background:#F1F2F4;white-space:nowrap}
-  .pp.guard{background:var(--blue100);color:#1D63C9} .pp.ai{background:var(--lime100);color:var(--deep)}
-  .pipe i{width:18px;height:3px;background:var(--mute);flex:none}
-  .pts{margin-top:36px;padding-left:26px;font-size:26px;line-height:1.8;color:var(--sub)}
-  .team{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-  .tm{border-radius:22px;padding:26px 10px;background:#F6F7F9;font-size:17px;color:var(--sub);text-align:center;line-height:1.4}
-  .tm b{display:block;font-size:26px;color:var(--ink);margin-bottom:4px} .tm.me{background:var(--lime100)}
+  .arch{display:flex;flex-direction:column}
+  .nd{border-radius:14px;padding:10px 14px;font-size:21px;font-weight:700;text-align:center;background:#F1F2F4;line-height:1.3}
+  .nd small{font-size:17px;font-weight:600;color:var(--sub);margin-left:6px}
+  .nd.guard{background:var(--blue100);color:#1D63C9} .nd.ai{background:var(--lime100);color:var(--deep)} .nd.ai small{color:var(--deep)}
+  .nd.res{background:var(--ink);color:#fff}
+  .nd.fill{flex:1;display:flex;align-items:center;justify-content:center}
+  .srv{border:2px solid #D5D9DF;border-radius:20px;padding:10px 14px 14px}
+  .srvt{font-size:21px;font-weight:800;margin-bottom:6px} .srvt small{font-size:17px;font-weight:600;color:var(--sub);margin-left:6px}
+  .lanes{display:grid;grid-template-columns:1fr 1.2fr;gap:14px}
+  .lane{display:flex;flex-direction:column}
+  .lane h4{font-size:17px;font-weight:700;color:var(--sub);text-align:center;margin-bottom:6px}
+  .team{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+  .tm{border-radius:22px;padding:24px 4px;background:#F6F7F9;font-size:15px;color:var(--sub);text-align:center;line-height:1.4}
+  .tm b{display:block;font-size:18px;color:var(--ink);margin-bottom:4px} .tm.me{background:var(--lime100)}
   .stats{display:flex;gap:40px;margin-top:30px} .stats div{font-size:20px;color:var(--sub);font-weight:600}
   .stats b{display:block;font-size:76px;font-weight:900;color:var(--ink);letter-spacing:-1px}
   .stack{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px} .stack span{font-size:20px;font-weight:700;padding:8px 16px;border-radius:99px;border:2px solid var(--line,#E2E5E9);color:var(--sub)}
 
   /* 앱 안의 AI 모델 */
-  .aims{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:26px;margin-top:44px}
-  .aim{border-radius:32px;padding:34px 30px;background:#F6F7F9;min-height:400px;display:flex;flex-direction:column}
-  .aim .use{font-size:20px;font-weight:800;color:var(--deep);letter-spacing:.5px}
-  .aim .mdl{font-size:36px;font-weight:900;letter-spacing:-.5px;line-height:1.2;margin-top:14px}
-  .aim .via{font-size:19px;font-weight:700;color:#1D63C9;margin-top:8px}
-  .aim p{font-size:22px;color:var(--sub);line-height:1.5;margin-top:18px;flex:1}
-  .aim .when{align-self:flex-start;font-size:18px;font-weight:800;padding:6px 14px;border-radius:99px;background:#fff;color:var(--deep)}
-  .aim.main{background:linear-gradient(140deg,var(--deep),var(--teal));color:#fff;box-shadow:0 24px 60px rgba(14,124,87,.28)}
-  .aim.main .use,.aim.main .via{color:#CFF3D8} .aim.main p{color:#E4F6E8}
-  .aim.safe{background:var(--blue100)}
-  .gate{position:absolute;left:110px;right:110px;bottom:56px;display:flex;gap:18px;align-items:center;font-size:24px;font-weight:700;color:var(--deep)}
+  .aflow{display:grid;grid-template-columns:170px 56px 400px 90px minmax(0,1fr);height:400px;margin-top:44px}
+  .aflow .who{align-self:center;border-radius:22px;padding:30px 12px;background:#F1F2F4;text-align:center;font-size:26px;font-weight:800;line-height:1.3}
+  .aflow .who small{display:block;font-size:18px;font-weight:600;color:var(--sub);margin-top:8px}
+  /* 선이 그려지고, 끝에 화살촉이 붙고, 그다음 개체가 나타남 */
+  .ln{fill:none;stroke:#A0A6AE;stroke-width:3;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .2s linear}
+  .on .ln{stroke-dashoffset:0}
+  .tip{fill:#A0A6AE;opacity:0;transition:opacity .08s linear}
+  .on .tip{opacity:1}
+  .lnh{display:block;width:56px;height:20px;align-self:center}
+  .lnv{display:block;flex:none;width:20px;height:22px;margin:0 auto}
+  .lnv.lg{height:26px} .lnv.sm{height:18px}
+  .lnw{position:relative} .lnw span{position:absolute;left:50%;top:0;margin-left:14px;font-size:17px;font-weight:600;color:var(--sub);line-height:26px}
+  .lnv .ln{transition-duration:.1s}
+  .fan .ln{transition-duration:.25s}
+  .aflow .srv{display:flex;flex-direction:column;justify-content:center;padding:14px 20px 20px}
+  .aflow .srvt{text-align:center;font-size:24px;margin-bottom:12px}
+  .aflow .nd{padding:13px 12px}
+  .aflow .nd small{display:block;margin:2px 0 0}
+  .fan{width:100%;height:100%;overflow:visible}
+  .mds{display:flex;flex-direction:column;gap:18px}
+  .md{flex:1;display:grid;grid-template-columns:250px minmax(0,1fr);gap:20px;align-items:center;border-radius:24px;padding:12px 26px;background:#F6F7F9}
+  .md .use{font-size:18px;font-weight:800;color:var(--sub)}
+  .md .mdl{font-size:30px;font-weight:900;letter-spacing:-.5px;line-height:1.2;margin-top:4px}
+  .md p{font-size:19px;color:var(--sub);line-height:1.4}
+  .md .when{display:inline-block;font-size:16px;font-weight:800;padding:4px 12px;border-radius:99px;background:#fff;color:var(--deep);margin-top:6px}
+  .md.main{background:var(--deep);color:#fff}
+  .md.main .use{color:#CFF3D8} .md.main p{color:#E4F6E8}
+  .gate{position:absolute;left:110px;right:110px;bottom:56px;display:flex;gap:18px;align-items:center;font-size:24px;font-weight:700;color:var(--ink)}
   #sAI .gate [data-a]{transition-duration:.36s,.48s} /* 3번째 카드와 함께, 더 빠르게 */
   .gate span{padding:14px 22px;border-radius:20px;background:var(--lime50);border:3px solid var(--lime100)}
+
+  /* 후기 — 원 둘레(바퀴)처럼: 가운데가 가장 크고 위·아래 끝으로 갈수록 작아지며 오른쪽으로 물러남 */
+  /* 큰 제목이 가운데 카드와 같은 높이로 보이게 30px 내림(수학적 가운데는 위로 떠 보이는 착시) */
+  #sRev .rvtext{position:absolute;left:110px;top:50%;transform:translateY(calc(-50% + 30px));width:640px}
+  #sRev .rvtext p{font-size:26px;color:var(--sub);line-height:1.55;margin-top:28px}
+  #sRev .rvtext small{display:block;font-size:20px;color:#6B727C;margin-top:18px}
+  /* 바퀴는 장 전체 높이: 위·아래 끝(맨 바깥 카드)은 그라데이션으로 연하게 사라짐 */
+  .wheel{position:absolute;left:760px;top:0;bottom:0;right:0;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 11%,#000 89%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 11%,#000 89%,transparent 100%)}
+  /* 카드 위치·크기는 스크립트(wheelAt)가 원 둘레 위 각도로 계산: 가운데 클수록, 끝으로 갈수록 작고 오른쪽으로 물러남 */
+  .slot{position:absolute;left:70px;top:50%;width:620px;transform-origin:left center;opacity:0;will-change:transform,opacity}
+  .rv{background:#fff;border-radius:44px;corner-shape:squircle;padding:22px 30px;box-shadow:0 18px 50px rgba(23,25,29,.10);border:2px solid #EEF0F2}
+  @supports not (corner-shape:squircle){.rv{border-radius:34px}}
+  .rv .who{font-size:18px;font-weight:700;color:var(--sub);letter-spacing:.2px}
+  .rv .who b{color:var(--ink)}
+  .rv q{display:block;white-space:nowrap;overflow:hidden;font-size:27px;font-weight:800;line-height:1.3;margin-top:8px;quotes:"“" "”"}
+  /* 초록 테두리·그림자: 가운데(--g=1)에 가까울수록 진해지고 벗어나면 흐려짐(스크립트가 --g를 위치로 계산) */
+  .rv{position:relative}
+  .rv::after{content:"";position:absolute;inset:-2px;border-radius:inherit;corner-shape:inherit;border:2px solid var(--lime100);box-shadow:0 26px 70px rgba(14,124,87,.20);opacity:var(--g,0);pointer-events:none}
+  .rv.temp{border-style:dashed}
+  .rv.temp q{color:#A0A6AE}
 
   #pg{position:fixed;right:18px;bottom:12px;color:#777;font:600 14px Pretendard,sans-serif}
     /* 발표자 화면의 미리보기: 애니메이션 없이 완성된 모습 */
@@ -224,27 +270,25 @@
   <!-- 1 표지 -->
   <section class="slide" id="s1">
     <div class="blob" style="width:900px;height:900px;right:-200px;top:-260px;background:var(--lime100);transform-origin:top right"></div>
-    <div class="pill" style="--r:-18deg;width:420px;height:120px;right:520px;bottom:120px;background:var(--lime);transition-delay:0.151s"></div>
-    <div class="pill" style="--r:12deg;width:260px;height:90px;right:80px;bottom:60px;background:var(--sky);transition-delay:0.263s"></div>
     <img class="ari float" data-a="pop" style="transition-delay:0.375s" src="img/art/a01/ari-happy.png" alt="아리">
     <div style="position:relative;margin-top:150px">
-      <div class="kicker" data-a style="transition-delay:0.151s">2026 • 바이브벤처</div>
+      <div class="kicker" data-a style="transition-delay:0.151s">2026 바이브벤처</div>
       <h1 data-a style="transition-delay:0.263s">Aries</h1>
       <p class="lead" data-a style="margin-top:28px;transition-delay:0.413s">하루 5분, AI를 <b class="grad">바르게</b> 쓰는 연습</p>
     </div>
-    <div class="who" data-a style="transition-delay:0.6s">영남공업고등학교 · 김현성</div>
+    <div class="who" data-a style="transition-delay:0.6s">영남공업고등학교 김현성</div>
   </section>
 
   <!-- 2 문제 — 이야기 -->
   <section class="slide" id="s2">
-    <div class="blob" style="width:620px;height:620px;right:-120px;bottom:-200px;background:var(--amber50);transform-origin:bottom right"></div>
+    <div class="blob" style="width:620px;height:620px;right:-120px;bottom:-200px;background:var(--lime50);transform-origin:bottom right"></div>
     <img class="float" data-a="pop" style="position:absolute;right:90px;bottom:30px;width:270px;transition-delay:0.151s" src="img/art/a01/ari-thinking.png" alt="">
-    <div class="kicker" data-a style="transition-delay:0.449s">우리가 본 것</div>
+    <div class="kicker" data-a style="transition-delay:0.449s">문제 인식</div>
     <div class="line" data-a style="transition-delay:0.6s">주변 친구들, 부모님, 그리고 많은 사람들이</div>
     <div class="line" data-a style="transition-delay:0.9s">AI를 그저 <em>유행</em>으로,</div>
     <div class="line" data-a style="transition-delay:1.2s">말 잘하는 <em>챗봇</em>으로만 생각하고,</div>
-    <div class="line" data-a style="transition-delay:1.5s">AI가 하는 말을 <em>그대로 믿어요.</em></div>
-    <div class="line end grad" data-a style="transition-delay:1.875s">쓰는 법은 다 아는데, 바르게 쓰는 법은 배운 적이 없어요.</div>
+    <div class="line" data-a style="transition-delay:1.5s">AI가 하는 말을 <em>그대로 믿습니다.</em></div>
+    <div class="line end grad" data-a style="transition-delay:1.875s">사용법은 알지만, 바르게 쓰는 법은 배운 적이 없습니다.</div>
     <div class="talk">
       <div class="bub" data-a="pop" style="transition-delay:1.049s">「AI가 그렇다던데?」</div>
       <div class="bub" data-a="pop" style="transition-delay:1.351s">「숙제 그냥 AI한테 시켰어」</div>
@@ -254,38 +298,39 @@
 
   <!-- 3 문제 — 숫자 -->
   <section class="slide" id="s3">
-    <div class="kicker" data-a>숫자로 보면</div>
-    <h2 data-a style="transition-delay:0.113s">이미 다 쓰는데, 배운 적은 없어요</h2>
+    <div class="kicker" data-a>현황</div>
+    <h2 data-a style="transition-delay:0.113s">이미 쓰고 있지만, 배운 적은 없습니다</h2>
     <div class="cards">
       <div class="card" data-a="up" style="transition-delay:0.24s">
         <div class="num"><span data-count="67.9">0</span>%</div>
-        <div class="cap">중·고등학생이 생성형 AI를<br>써 본 적 있어요</div>
+        <div class="cap">중고등학생이 생성형 AI를<br>사용한 경험이 있습니다</div>
         <div class="cv"><canvas id="c1"></canvas></div>
       </div>
       <div class="card" data-a="up" style="transition-delay:0.449s">
         <div class="num"><span data-count="55.0">0</span>%</div>
-        <div class="cap">청소년이 AI가 준 정보를<br>믿는다고 답했어요</div>
+        <div class="cap">청소년이 AI가 준 정보를<br>믿는다고 답했습니다</div>
         <div class="cv"><canvas id="c2"></canvas></div>
       </div>
       <div class="card" data-a="up" style="transition-delay:0.66s">
         <div class="num"><span data-count="1.26" data-dec="2">0</span>조 원</div>
-        <div class="cap">2025년 보이스피싱 피해액,<br>1년 만에 47% 늘었어요</div>
+        <div class="cap">2025년 보이스피싱 피해액,<br>1년 만에 47% 증가했습니다</div>
         <div class="cv"><canvas id="c3"></canvas></div>
       </div>
     </div>
-    <p class="src">출처: ① 한국청소년정책연구원, 중·고생 5,778명, 2024.5~7 조사(에듀플러스 2025.2.25 보도) ② 한국청소년정책연구원 「청소년 디지털 인재를 어떻게 양성할까」, 중·고생 2,261명, 2023.7~8 조사(경향신문 2024.9.2 보도) ③ 경찰청 자료, 권영진 의원실 분석(아이뉴스24 2026.1 보도): 2025년 1조 2,578억 원, 전년보다 47.2% 증가</p>
+    <p class="src">출처: ① 한국청소년정책연구원, 중고생 5,778명, 2024.5~7 조사(에듀플러스 2025.2.25 보도) ② 한국청소년정책연구원 「청소년 디지털 인재를 어떻게 양성할까」, 중고생 2,261명, 2023.7~8 조사(경향신문 2024.9.2 보도) ③ 경찰청 자료, 권영진 의원실 분석(아이뉴스24 2026.1 보도): 2025년 1조 2,578억 원, 전년보다 47.2% 증가</p>
   </section>
 
   <!-- 4 해결 -->
   <section class="slide" id="s4">
     <div class="blob" style="width:700px;height:700px;left:-260px;bottom:-380px;background:var(--lime100);transform-origin:bottom left"></div>
-    <div class="kicker" data-a>그래서 만들었어요</div>
+    <div class="kicker" data-a>해결 방법</div>
     <h2 data-a style="transition-delay:0.113s">게임처럼 매일 하는<br><span class="grad">AI 바르게 쓰기</span> 연습</h2>
     <div class="words">
       <div class="word" data-a="pop" style="transition-delay:0.3s">하루 5분</div>
       <div class="word" data-a="pop" style="transition-delay:0.413s">게임처럼</div>
       <div class="word" data-a="pop" style="transition-delay:0.525s">중학생 눈높이</div>
     </div>
+    <p class="diff" data-a style="transition-delay:0.65s">듣고 끝나는 AI 강의와 달리,<br><b>사기 메시지에 직접 답하며</b> 연습합니다</p>
     <div class="phones">
       <div class="phone" style="right:640px;transform:rotate(-10deg);transition-delay:0.449s"><img src="img/ui-shots/03-tab-learn-path.png" alt="학습 지도"></div>
       <div class="phone" style="right:360px;bottom:60px;z-index:2;transition-delay:0.6s"><img src="img/ui-shots/07-types-t4-correct.png" alt="레슨"></div>
@@ -295,17 +340,17 @@
 
   <!-- 5 유형 -->
   <section class="slide" id="s5">
-    <div class="kicker" data-a>이렇게 배워요</div>
-    <h2 data-a style="transition-delay:0.113s">여덟 가지 문제로 연습해요</h2>
+    <div class="kicker" data-a>학습 방식</div>
+    <h2 data-a style="transition-delay:0.113s">여덟 가지 유형으로 연습합니다</h2>
     <div class="big160" data-a="right" style="transition-delay:0.225s"><div class="n"><span data-count="160">0</span></div><div class="t">섹션 1 문제 수</div></div>
     <div class="types">
       <div class="type" style="--d:0"><div class="in" style="transition-delay:0.3s"><b>객관식</b><span>맞는 답 고르기</span></div></div>
-      <div class="type"><div class="in" style="transition-delay:0.375s"><b>카드 판정</b><span>위험해? 안전해?</span></div></div>
+      <div class="type"><div class="in" style="transition-delay:0.375s"><b>카드 판정</b><span>위험과 안전 판정</span></div></div>
       <div class="type"><div class="in" style="transition-delay:0.449s"><b>짝 잇기</b><span>선으로 연결</span></div></div>
       <div class="type"><div class="in" style="transition-delay:0.525s"><b>빈칸</b><span>단어 끌어 넣기</span></div></div>
       <div class="type"><div class="in" style="transition-delay:0.6s"><b>틀린 문장 찾기</b><span>AI 답 검사</span></div></div>
       <div class="type"><div class="in" style="transition-delay:0.675s"><b>블록 조립</b><span>좋은 질문 만들기</span></div></div>
-      <div class="type soon"><div class="in" style="transition-delay:0.751s"><b>Live AI 실습 · 곧 나와요</b><span>진짜 AI와 연습</span></div></div>
+      <div class="type soon"><div class="in" style="transition-delay:0.751s"><b>Live AI 실습 (출시 예정)</b><span>진짜 AI와 연습</span></div></div>
       <div class="type chat"><div class="in" style="transition-delay:0.825s"><b>채팅 시뮬레이션</b><span>사기 메시지 대처</span></div></div>
     </div>
     <div class="strip">
@@ -315,22 +360,22 @@
 
   <!-- 고객과 가치 -->
   <section class="slide" id="sCust">
-    <div class="kicker" data-a>누구를 위해</div>
-    <h2 data-a style="transition-delay:0.113s">쓰는 사람, 믿고 맡기는 사람</h2>
+    <div class="kicker" data-a>고객</div>
+    <h2 data-a style="transition-delay:0.113s">사용자, 구독자, 다음 고객</h2>
     <div class="persona">
       <div class="pc" data-a="up" style="transition-delay:0.271s">
-        <div class="tag">사용자</div><h3>중·고등학생</h3>
-        <p class="pain">숙제·공부에 AI를 쓰지만<br>확인하는 법은 몰라요</p>
+        <div class="tag">사용자</div><h3>중고등학생</h3>
+        <p class="pain">숙제와 공부에 AI를 쓰지만<br>확인하는 법은 모릅니다</p>
         <p class="val">하루 5분 게임으로<br><b>바르게 쓰는 습관</b></p>
       </div>
       <div class="pc" data-a="up" style="transition-delay:0.48s">
-        <div class="tag">구독하는 사람</div><h3>학생 · 부모님</h3>
-        <p class="pain"><b>만 14세 이상</b>은 학생 본인이,<br><b>만 14세 미만</b>은 부모님이 구독해요</p>
+        <div class="tag">구독하는 사람</div><h3>학생과 부모님</h3>
+        <p class="pain"><b>만 14세 이상</b>은 학생 본인이,<br><b>만 14세 미만</b>은 부모님이 구독합니다</p>
         <p class="val">내 성장 리포트 +<br><b>부모님 주간 학습 요약</b></p>
       </div>
       <div class="pc later" data-a="up" style="transition-delay:0.689s">
-        <div class="tag">다음 고객</div><h3>학교·기관</h3>
-        <p class="pain">AI 윤리·안전 수업 자료와<br>시간이 부족해요</p>
+        <div class="tag">다음 고객</div><h3>학교와 기관</h3>
+        <p class="pain">AI 윤리와 안전 수업 자료,<br>시간이 부족합니다</p>
         <p class="val">수업에 바로 쓰는<br><b>클래스용 Aries</b></p>
       </div>
     </div>
@@ -338,18 +383,36 @@
 
   <!-- 6 시연 영상 -->
   <section class="slide" id="s6">
-    <div class="kicker" data-a>직접 보면</div>
+    <div class="kicker" data-a>시연</div>
     <div class="chap" data-a="left" style="transition-delay:0.151s">
       <div data-t="0" class="now">① 학습 지도에서 레슨 시작</div>
       <div data-t="4.2">② 문제 풀고 바로 피드백</div>
       <div data-t="10.8">③ 채팅 시뮬레이션: 엄마 사칭 문자</div>
-      <div data-t="22">④ 경험치 · 연속 학습 · 퀘스트</div>
+      <div data-t="22">④ 경험치, 연속 학습, 퀘스트</div>
     </div>
-    <div class="side" data-a="right" style="transition-delay:0.375s"><span class="grad">실제 앱</span><br>그대로<small>집에서 폰 화면을 녹화한 영상</small></div>
+    <div class="side" data-a="right" style="transition-delay:0.375s"><span class="grad">실제 앱</span><br>화면<small>집에서 폰 화면을 녹화한 영상</small></div>
     <div class="screen" data-a="pop" style="transition-delay:0.225s">
       <!-- 녹화 영상을 demo.mp4로 넣으면 자동 재생 (C07 뒤 집에서 녹화) -->
       <video id="demo" src="demo.mp4" muted playsinline preload="auto"></video>
       <div class="ph" id="demo-ph">시연 영상 자리<br><small>docs/pitch/demo.mp4</small></div>
+    </div>
+  </section>
+
+  <!-- 써 본 학생들의 후기 (임시 카드 = 점선, 실제 후기를 받으면 교체) -->
+  <section class="slide" id="sRev">
+    <div class="rvtext">
+      <div class="kicker" data-a>사용자 후기</div>
+      <h2 data-a style="transition-delay:0.113s">먼저 사용한 학생들의<br><span class="grad">실제 평가</span></h2>
+      <p data-a style="transition-delay:0.75s">체험판을 사용한 학생들의 후기입니다<small>베타 전 소규모 사용, 후기 수집 중</small></p>
+    </div>
+    <div class="wheel">
+      <div class="slot" data-k="-3"><div class="rv"><div class="who"><b>영남공업고등학교</b> 1학년 김○준 학생</div><q>AI에 대해 더 알 수 있어서 신기했어</q></div></div>
+      <div class="slot" data-k="-2"><div class="rv"><div class="who"><b>경상고등학교</b> 1학년 조○준 학생</div><q>여러 가지 용도로 쓰임새가 좋아 보인다</q></div></div>
+      <div class="slot" data-k="-1"><div class="rv"><div class="who"><b>경상여자고등학교</b> 1학년 박○해 학생</div><q>여러 방식으로 공부할 수 있어서 좋은 거 같아</q></div></div>
+      <div class="slot c" data-k="0"><div class="rv"><div class="who"><b>칠성고등학교</b> 1학년 허○성 학생</div><q>AI가 아닌 줄 알았던 것들도 AI인 것을 알게 됐다</q></div></div>
+      <div class="slot" data-k="1"><div class="rv"><div class="who"><b>영남공업고등학교</b> 1학년 장○훈 학생</div><q>앱을 직접 체험해 보고 나서 AI에 대해 많이 알게 되었다</q></div></div>
+      <div class="slot" data-k="2"><div class="rv"><div class="who"><b>영남공업고등학교</b> 1학년 이○국 학생</div><q>문제 유형이 많아서 다양하게 학습할 수 있어서 좋아</q></div></div>
+      <div class="slot" data-k="3"><div class="rv"><div class="who"><b>영남공업고등학교</b> 1학년 이○민 학생</div><q>디자인이 좋고, UI의 일관성이 좋아</q></div></div>
     </div>
   </section>
 
@@ -358,16 +421,16 @@
     <div class="kicker" data-a>시장</div>
     <h2 data-a style="transition-delay:0.113s">이미 AI를 쓰는 학생만<br><span class="grad">약 181만 명</span></h2>
     <div class="funnel">
-      <div class="fl" data-a="left" style="transition-delay:0.3s"><div class="fb" style="--w:100%"><span><b><span data-count="267">0</span>만 명</b> 전국 중·고등학생</span></div></div>
+      <div class="fl" data-a="left" style="transition-delay:0.3s"><div class="fb" style="--w:100%"><span><b><span data-count="267">0</span>만 명</b> 전국 중고등학생</span></div></div>
       <div class="fl" data-a="left" style="transition-delay:0.525s"><div class="fb mid" style="--w:68%"><span><b><span data-count="181">0</span>만 명</b> 생성형 AI를 써 본 학생 (67.9%)</span></div></div>
-      <div class="fl" data-a="left" style="transition-delay:0.751s"><div class="fb end" style="--w:48%"><span><b>첫 목표</b> 대구 중·고등학생부터</span></div></div>
+      <div class="fl" data-a="left" style="transition-delay:0.751s"><div class="fb end" style="--w:48%"><span><b>첫 목표</b> 대구 중고등학생부터</span></div></div>
     </div>
     <div class="side" data-a="right" style="transition-delay:0.9s">
       <div class="sn">10조 원</div>
       <div class="st">국내 에듀테크 시장(2025 전망)</div>
-      <p>AI 교과서·AI 교육이 늘면서<br>학교와 가정 모두 커지는 시장</p>
+      <p>AI 교과서와 AI 교육 확대로<br>학교와 가정 모두 성장하는 시장</p>
     </div>
-    <p class="src">출처: 교육부·한국교육개발원 2025 교육기본통계(중학생 1,370,356명 + 고등학생 1,299,466명), 한국청소년정책연구원 2024 조사(67.9%), 한국에듀테크산업협회 2022년 전망(2025년 9조 9,833억 원). 181만 명 = 267만 × 67.9%(추정)</p>
+    <p class="src">출처: 교육부, 한국교육개발원 2025 교육기본통계(중학생 1,370,356명 + 고등학생 1,299,466명), 한국청소년정책연구원 2024 조사(67.9%), 한국에듀테크산업협회 2022년 전망(2025년 9조 9,833억 원). 181만 명 = 267만 × 67.9%(추정)</p>
   </section>
 
   <!-- 수익 모델 -->
@@ -377,48 +440,70 @@
     <div class="plans">
       <div class="plan" data-a="up" style="transition-delay:0.271s">
         <div class="pn">무료</div>
-        <ul><li>모든 핵심 안전 교육</li><li>매일 레슨·퀘스트·마을</li><li>광고 없음</li></ul>
+        <div class="pr">0원</div>
+        <ul><li>모든 핵심 안전 교육</li><li>매일 레슨, 퀘스트, 마을</li><li>광고 없음</li></ul>
       </div>
       <div class="plan plus" data-a="up" style="transition-delay:0.48s">
         <div class="pn">Aries Plus <small>월 구독</small></div>
-        <ul><li>진짜 AI와 연습하는 Live AI 더 많이</li><li>AI 튜터 아리</li><li>역량별 상세 리포트 · 부모님 주간 요약</li></ul>
+        <div class="pr">월 7,900원 <small>연 59,000원</small></div>
+        <ul><li>진짜 AI와 연습하는 Live AI 더 많이</li><li>AI 튜터 아리</li><li>역량별 상세 리포트, 부모님 주간 요약</li></ul>
       </div>
       <div class="plan later" data-a="up" style="transition-delay:0.689s">
-        <div class="pn">학교·기관 <small>다음 단계</small></div>
-        <ul><li>클래스 모드 · 교사 대시보드</li><li>학생 단위 라이선스</li></ul>
+        <div class="pn">학교와 기관 <small>다음 단계</small></div>
+        <div class="pr">학교별 계약 <small>2027년 이후</small></div>
+        <ul><li>클래스 모드, 교사 대시보드</li><li>학생 단위 라이선스</li></ul>
       </div>
     </div>
-    <p class="note" data-a="up" style="transition-delay:0.9s">핵심 안전 교육은 절대 유료로 막지 않아요 — 신뢰가 먼저</p>
+    <p class="note" data-a="up" style="transition-delay:0.9s">핵심 안전 교육은 유료로 제한하지 않습니다. 가격은 출시 할인가 기준이며, 12월 베타 테스트 후 바뀔 수 있습니다</p>
   </section>
 
   <!-- 기술·AI 활용 -->
   <section class="slide" id="sTech">
-    <div class="kicker" data-a>기술 · AI 활용</div>
-    <h2 data-a style="transition-delay:0.113s">AI를 바르게 쓰는 앱을,<br><span class="grad">AI를 바르게 써서</span> 만들었어요</h2>
+    <div class="kicker" data-a>기술</div>
+    <h2 data-a style="transition-delay:0.113s">채점과 보상은 서버가 판정하는<br><span class="grad">안전한 구조</span>로 만들었습니다</h2>
     <div class="tech">
       <div class="col">
-        <h3 data-a style="transition-delay:0.225s">앱 안의 AI</h3>
-        <div class="pipe">
-          <div class="pp" data-a style="transition-delay:0.338s">학생 글</div><i data-a style="transition-delay:0.413s"></i>
-          <div class="pp guard" data-a style="transition-delay:0.488s">개인정보 필터</div><i data-a style="transition-delay:0.563s"></i>
-          <div class="pp guard" data-a style="transition-delay:0.638s">유해 내용 검사</div><i data-a style="transition-delay:0.713s"></i>
-          <div class="pp ai" data-a style="transition-delay:0.788s">AI 채점</div>
+        <h3 data-a="grow" style="transition-delay:0.225s;transform-origin:left">시스템 구조</h3>
+        <div class="arch">
+          <div class="nd" data-a="grow" style="transition-delay:0.3s">학생 앱 <small>React Native</small></div>
+          <div class="lnw"><svg class="lnv lg" viewBox="0 0 20 26" aria-hidden="true"><path class="ln" pathLength="1" d="M10 2V16" style="transition-delay:0.5s"/><path class="tip" d="M4 15L10 24L16 15z" style="transition-delay:0.58s"/></svg><span data-a="grow" style="transition-delay:0.5s">답안 전송</span></div>
+          <div class="srv" data-a="grow" style="transition-delay:0.62s">
+            <div class="srvt">서버 판정 <small>NestJS</small></div>
+            <div class="lanes">
+              <div class="lane">
+                <h4 data-a="grow" style="transition-delay:0.75s">정답이 정해진 문제</h4>
+                <div class="nd fill" data-a="grow" style="transition-delay:0.85s">AI 없이<br>서버가 채점</div>
+              </div>
+              <div class="lane">
+                <h4 data-a="grow" style="transition-delay:0.75s">학생이 쓴 글</h4>
+                <div class="nd guard" data-a="grow" style="transition-delay:0.85s">개인정보 필터</div>
+                <svg class="lnv sm" viewBox="0 0 20 18" aria-hidden="true"><path class="ln" pathLength="1" d="M10 1V9" style="transition-delay:1.0s"/><path class="tip" d="M4 8L10 17L16 8z" style="transition-delay:1.08s"/></svg>
+                <div class="nd guard" data-a="grow" style="transition-delay:1.1s">유해 내용 검사</div>
+                <svg class="lnv sm" viewBox="0 0 20 18" aria-hidden="true"><path class="ln" pathLength="1" d="M10 1V9" style="transition-delay:1.25s"/><path class="tip" d="M4 8L10 17L16 8z" style="transition-delay:1.33s"/></svg>
+                <div class="nd ai" data-a="grow" style="transition-delay:1.35s">AI 채점 <small>검증 중</small></div>
+              </div>
+            </div>
+            <svg class="lnv sm" viewBox="0 0 20 18" aria-hidden="true"><path class="ln" pathLength="1" d="M10 1V9" style="transition-delay:1.5s"/><path class="tip" d="M4 8L10 17L16 8z" style="transition-delay:1.58s"/></svg>
+            <div class="nd res" data-a="grow" style="transition-delay:1.6s">점수와 보상 결정</div>
+          </div>
+          <svg class="lnv lg" viewBox="0 0 20 26" aria-hidden="true"><path class="ln" pathLength="1" d="M10 2V16" style="transition-delay:1.75s"/><path class="tip" d="M4 15L10 24L16 15z" style="transition-delay:1.83s"/></svg>
+          <div class="nd" data-a="grow" style="transition-delay:1.85s">데이터베이스 <small>Firestore, 서버만 접근</small></div>
         </div>
-        <ul class="pts" data-a style="transition-delay:0.863s"><li>정답이 정해진 문제는 AI 없이 서버가 채점</li><li>점수·보상은 서버가 판정 — 앱을 고쳐도 못 바꿈</li><li>만 14세 미만은 보호자 동의</li></ul>
       </div>
       <div class="col">
-        <h3 data-a style="transition-delay:1.26s">AI와 함께 만든 방법</h3>
+        <h3 data-a style="transition-delay:1.26s">개발에 쓴 AI 도구</h3>
         <div class="team">
-          <div class="tm me" data-a="pop" style="transition-delay:1.411s"><b>나</b>기획 · 결정</div>
-          <div class="tm" data-a="pop" style="transition-delay:1.5s"><b>Claude</b>설계 · 검토</div>
-          <div class="tm" data-a="pop" style="transition-delay:1.589s"><b>GPT</b>코드 구현</div>
-          <div class="tm" data-a="pop" style="transition-delay:1.68s"><b>Gemini</b>교차 리뷰</div>
+          <div class="tm me" data-a="pop" style="transition-delay:1.411s"><b>나</b>기획과 결정</div>
+          <div class="tm" data-a="pop" style="transition-delay:1.5s"><b>Copilot</b>구현, 리뷰</div>
+          <div class="tm" data-a="pop" style="transition-delay:1.589s"><b>Claude Code</b>설계와 검토</div>
+          <div class="tm" data-a="pop" style="transition-delay:1.68s"><b>Codex</b>코드 구현</div>
+          <div class="tm" data-a="pop" style="transition-delay:1.75s"><b>Antigravity</b>교차 리뷰</div>
         </div>
         <div class="stats" data-a style="transition-delay:1.829s">
           <div><b><span data-count="1700">0</span>+</b>자동 테스트</div>
           <div><b><span data-count="130">0</span></b>기록한 결정</div>
         </div>
-        <div class="stack"><span data-a="pop" style="transition-delay:2.04s">React Native · Expo</span><span data-a="pop" style="transition-delay:2.129s">NestJS</span><span data-a="pop" style="transition-delay:2.22s">Firebase</span><span data-a="pop" style="transition-delay:2.311s">TypeScript</span></div>
+        <div class="stack"><span data-a="pop" style="transition-delay:2.04s">React Native, Expo</span><span data-a="pop" style="transition-delay:2.129s">NestJS</span><span data-a="pop" style="transition-delay:2.22s">Firebase</span><span data-a="pop" style="transition-delay:2.311s">TypeScript</span><span data-a="pop" style="transition-delay:2.3s">체험판 배포: Azure</span></div>
       </div>
     </div>
   </section>
@@ -426,58 +511,59 @@
   <!-- 앱 안의 AI 모델 -->
   <section class="slide" id="sAI">
     <div class="kicker" data-a>앱 안의 AI 모델</div>
-    <h2 data-a style="transition-delay:0.113s">AI를 새로 만들지 않고,<br><span class="grad">검증된 AI를 골라 연결</span>했어요</h2>
-    <div class="aims">
-      <div class="aim main" data-a="up" style="transition-delay:0.271s">
-        <div class="use">AI 채점</div><div class="mdl">TypeSafe Jev</div><div class="via">채점 전용 AI · API</div>
-        <p>학생 답이 기준을 지켰는지 판정만 해요. 0.5초 안에, 확신도까지</p><span class="when">연결 완료 · 검증 중</span>
+    <h2 data-a style="transition-delay:0.113s">외부에서 검증된 AI 모델을<br><span class="grad">API로 연결</span>했습니다</h2>
+    <div class="aflow">
+      <div class="who" data-a="grow" style="transition-delay:0.25s">학생 글<small>답안, 프롬프트</small></div>
+      <svg class="lnh" viewBox="0 0 56 20" aria-hidden="true"><path class="ln" pathLength="1" d="M8 10H40" style="transition-delay:0.45s"/><path class="tip" d="M38 3L48 10L38 17z" style="transition-delay:0.63s"/></svg>
+      <div class="srv" data-a="grow" style="transition-delay:0.67s">
+        <div class="srvt">우리 서버 게이트웨이</div>
+        <div class="nd guard" data-a="grow" style="transition-delay:0.8s">개인정보 필터 <small>직접 만든 규칙</small></div>
+        <svg class="lnv" viewBox="0 0 20 22" aria-hidden="true"><path class="ln" pathLength="1" d="M10 1V13" style="transition-delay:0.98s"/><path class="tip" d="M4 12L10 21L16 12z" style="transition-delay:1.06s"/></svg>
+        <div class="nd guard" data-a="grow" style="transition-delay:1.08s">유해 내용 검사 <small>OpenAI 검열 API</small></div>
+        <svg class="lnv" viewBox="0 0 20 22" aria-hidden="true"><path class="ln" pathLength="1" d="M10 1V13" style="transition-delay:1.26s"/><path class="tip" d="M4 12L10 21L16 12z" style="transition-delay:1.34s"/></svg>
+        <div class="nd" data-a="grow" style="transition-delay:1.36s">비용 한도 확인</div>
       </div>
-      <div class="aim" data-a="up" style="transition-delay:0.48s">
-        <div class="use">Live AI 연습</div><div class="mdl">GPT-6 Luna</div><div class="via">OpenAI · API</div>
-        <p>진짜 AI에게 직접 프롬프트를 써 보고, 결과는 Jev가 채점</p><span class="when">12월 베타</span>
-      </div>
-      <div class="aim" data-a="up" style="transition-delay:0.689s">
-        <div class="use">주간 이미지 대회</div><div class="mdl">GPT Image 2.5</div><div class="via">OpenAI 이미지 · API</div>
-        <p>프롬프트로 그림을 만들고, 그림도 한 번 더 검사해서 공개</p><span class="when">2027</span>
-      </div>
-      <div class="aim safe" data-a="up" style="transition-delay:0.9s">
-        <div class="use">안전 검사</div><div class="mdl">개인정보 필터</div><div class="via">직접 만든 규칙 + API</div>
-        <p>AI에 보내기 전에 개인정보를 막고, 위험한 글은 OpenAI 검열 API로 걸러요</p><span class="when">완료</span>
+      <svg class="fan" viewBox="0 0 90 400" aria-hidden="true"><path class="ln" pathLength="1" d="M4 200C44 200 40 61 78 61" style="transition-delay:1.52s"/><path class="tip" d="M76 54L86 61L76 68z" style="transition-delay:1.75s"/><path class="ln" pathLength="1" d="M4 200H78" style="transition-delay:1.6s"/><path class="tip" d="M76 193L86 200L76 207z" style="transition-delay:1.83s"/><path class="ln" pathLength="1" d="M4 200C44 200 40 339 78 339" style="transition-delay:1.68s"/><path class="tip" d="M76 332L86 339L76 346z" style="transition-delay:1.91s"/></svg>
+      <div class="mds">
+        <div class="md main" data-a="grow" style="transition-delay:1.75s"><div><div class="use">AI 채점</div><div class="mdl">TypeSafe Jev</div></div><div><p>기준을 지켰는지 판정합니다</p><span class="when">연결 완료, 검증 중</span></div></div>
+        <div class="md" data-a="grow" style="transition-delay:1.83s"><div><div class="use">Live AI 연습</div><div class="mdl">GPT-6 Luna</div></div><div><p>결과는 Jev가 채점합니다</p><span class="when">12월 베타</span></div></div>
+        <div class="md" data-a="grow" style="transition-delay:1.91s"><div><div class="use">주간 이미지 대회</div><div class="mdl">GPT Image 2.5</div></div><div><p>그림도 다시 검사한 뒤 공개합니다</p><span class="when">2027</span></div></div>
       </div>
     </div>
-    <div class="gate"><span data-a="up" style="transition-delay:0.689s">모든 AI 호출은 우리 서버 한 곳(게이트웨이)으로</span><span data-a="up" style="transition-delay:0.779s">모델은 바꿔 끼울 수 있게</span><span data-a="up" style="transition-delay:0.869s">정답이 정해진 문제는 AI 없이</span></div>
+    <div class="gate"><span data-a="up" style="transition-delay:2.2s">모델은 교체할 수 있습니다</span><span data-a="up" style="transition-delay:2.3s">정답이 정해진 문제는 AI를 쓰지 않습니다</span></div>
   </section>
 
   <!-- 8 앞으로 -->
   <section class="slide" id="s8">
-    <div class="kicker" data-a>제품 로드맵</div>
-    <h2 data-a style="transition-delay:0.113s">곧 만날 Aries</h2>
+    <div class="kicker" data-a>개발 계획</div>
+    <h2 data-a style="transition-delay:0.113s">앞으로의 개발 일정</h2>
     <div class="road">
       <div class="bar"></div><div class="fill"></div>
-      <div class="stop" style="left:45px"><div class="dot" data-a="bounce" style="transition-delay:0.36s"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#2B8636" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><b data-a style="transition-delay:0.448s">지금</b><span data-a style="transition-delay:0.536s">레슨 · 채팅 시뮬레이션</span></div>
+      <div class="stop" style="left:45px"><div class="dot" data-a="bounce" style="transition-delay:0.36s"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#2B8636" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><b data-a style="transition-delay:0.448s">지금</b><span data-a style="transition-delay:0.536s">레슨, 채팅 시뮬레이션</span></div>
       <div class="stop" style="left:calc(45px + (100% - 90px) / 3)"><div class="dot" data-a="bounce" style="transition-delay:0.84s"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#2B8636" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="#2B8636"/></svg></div><b data-a style="transition-delay:0.928s">진단 미션</b><span data-a style="transition-delay:1.016s">AI가 내 실력을 채점</span></div>
-      <div class="stop" style="left:calc(45px + (100% - 90px) * 2 / 3)"><div class="dot" data-a="bounce" style="transition-delay:1.32s"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#2B8636" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11L12 4l8.5 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></svg></div><b data-a style="transition-delay:1.408s">마을 꾸미기</b><span data-a style="transition-delay:1.496s">별조각으로 나만의 마을</span></div>
-      <div class="stop" style="left:calc(100% - 45px)"><div class="dot" data-a="bounce" style="transition-delay:1.8s"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#2B8636" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15l-3-3c1.2-4.5 4.6-7.6 10-8.5-.9 5.4-4 8.8-8.5 10z"/><path d="M9 12l-3.5.5L4 15l4 1M12 15l-.5 3.5L9 20l-1-4"/><circle cx="15" cy="8.5" r="1.3"/></svg></div><b data-a style="transition-delay:1.888s">12월 베타</b><span data-a style="transition-delay:1.976s">친구들과 함께</span></div>
+      <div class="stop" style="left:calc(45px + (100% - 90px) * 2 / 3)"><div class="dot" data-a="bounce" style="transition-delay:1.32s"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#2B8636" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11L12 4l8.5 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></svg></div><b data-a style="transition-delay:1.408s">마을 꾸미기</b><span data-a style="transition-delay:1.496s">별조각으로 마을 꾸미기</span></div>
+      <div class="stop" style="left:calc(100% - 45px)"><div class="dot" data-a="bounce" style="transition-delay:1.8s"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#2B8636" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15l-3-3c1.2-4.5 4.6-7.6 10-8.5-.9 5.4-4 8.8-8.5 10z"/><path d="M9 12l-3.5.5L4 15l4 1M12 15l-.5 3.5L9 20l-1-4"/><circle cx="15" cy="8.5" r="1.3"/></svg></div><b data-a style="transition-delay:1.888s">12월 베타</b><span data-a style="transition-delay:1.976s">학생 대상 테스트</span></div>
     </div>
+    <p class="reach" data-a style="transition-delay:2.1s"><b>첫 사용자</b> 우리 학교 친구들 → 대구 중고등학교 → 교육청 프로그램</p>
     <div class="village">
       <img data-a="up" style="transition-delay:1.32s" src="img/art/village/village-building-home-lv1.png" alt=""><img data-a="up" style="transition-delay:1.5s" src="img/art/village/village-building-library-lv1.png" alt=""><img data-a="up" style="transition-delay:1.68s" src="img/art/village/village-building-cafe-lv1.png" alt="">
     </div>
   </section>
 
-  <!-- 성장 로드맵 (2장 버전) -->
+  <!-- 사업 확장 계획 (2장 버전) -->
   <section class="slide" id="sGrow">
-    <div class="kicker" data-a>성장 로드맵</div>
-    <h2 data-a style="transition-delay:0.113s">학생에서 시작해,<br><span class="grad">AI를 쓰는 모든 사람에게</span></h2>
+    <div class="kicker" data-a>사업 확장 계획</div>
+    <h2 data-a style="transition-delay:0.113s">학생에서 시작해<br><span class="grad">모든 AI 사용자로 확장</span>합니다</h2>
     <div class="rings">
-      <div class="ring r4" data-a="pop" style="--r:700px;transition-delay:0.713s"><span><b>모두에게</b>선생님 · 회사원</span></div>
-      <div class="ring r3" data-a="pop" style="--r:530px;transition-delay:0.563s"><span><b>가정으로</b>학부모 · 초등 고학년</span></div>
-      <div class="ring r2" data-a="pop" style="--r:370px;transition-delay:0.413s"><span><b>학교로</b>2027 이후 · 클래스 모드</span></div>
-      <div class="ring r1" data-a="pop" style="--r:215px;transition-delay:0.263s"><span><b>중·고등 학생</b>2027 상반기 정식 출시</span></div>
+      <div class="ring r4" data-a="pop" style="--r:700px;transition-delay:0.713s"><span><b>모두에게</b>선생님, 회사원</span></div>
+      <div class="ring r3" data-a="pop" style="--r:530px;transition-delay:0.563s"><span><b>가정으로</b>학부모, 초등 고학년</span></div>
+      <div class="ring r2" data-a="pop" style="--r:370px;transition-delay:0.413s"><span><b>학교로</b>2027 이후, 클래스 모드</span></div>
+      <div class="ring r1" data-a="pop" style="--r:215px;transition-delay:0.263s"><span><b>중고등학생</b>2027 상반기 정식 출시</span></div>
     </div>
     <ul class="gsteps">
       <li data-a style="transition-delay:0.375s"><b>2027 상반기</b>Plus 월 구독으로 정식 출시</li>
-      <li data-a style="transition-delay:0.525s"><b>2027 이후</b>학교·기관 라이선스</li>
-      <li data-a style="transition-delay:0.675s"><b>그다음</b>초등 고학년 · 학부모 · 선생님 · 회사원</li>
+      <li data-a style="transition-delay:0.525s"><b>2027 이후</b>학교와 기관 라이선스</li>
+      <li data-a style="transition-delay:0.675s"><b>그다음</b>초등 고학년, 학부모, 선생님, 회사원</li>
     </ul>
   </section>
 
@@ -485,27 +571,26 @@
   <section class="slide" id="s9">
     <div class="blob" style="width:820px;height:820px;right:-180px;bottom:-260px;background:var(--lime100);transform-origin:bottom right"></div>
     <div style="position:relative">
-      <h2 data-a style="transition-delay:0.151s">AI를 <span style="color:var(--mute)">잘 쓰는 사람</span>보다,<br><span class="grad">바르게 쓰는 사람</span></h2>
-      <p class="lead" data-a style="margin-top:40px;transition-delay:0.525s">감사합니다 · Aries</p>
+      <h2 data-a style="transition-delay:0.151s">AI를 잘 쓰는 법부터,<br><span class="grad">바르게 쓰는 법까지</span></h2>
+      <p class="lead" data-a style="margin-top:40px;transition-delay:0.525s">감사합니다. Aries였습니다.</p>
     </div>
     <img class="ari float" data-a="pop" style="transition-delay:0.375s" src="img/art/a01/ari-cheer.png" alt="아리">
   </section>
 
   <!-- 질의응답 -->
   <section class="slide" id="sQA">
-    <div class="blob" style="width:820px;height:820px;right:-220px;top:-300px;background:var(--lime100);transform-origin:top right"></div>
-    <div class="pill" style="--r:-14deg;width:340px;height:100px;left:120px;bottom:120px;background:var(--lime);transition-delay:0.225s"></div>
+    <div class="blob" style="width:700px;height:700px;left:-260px;bottom:-380px;background:var(--lime100);transform-origin:bottom left"></div>
     <div style="position:relative;margin-top:120px">
       <div class="kicker" data-a style="transition-delay:0.075s">Q &amp; A</div>
       <h1 data-a style="transition-delay:0.188s;font-size:98px">질문 있으신가요?</h1>
-      <p class="lead" data-a style="margin-top:30px;transition-delay:0.338s">편하게 물어봐 주세요</p>
+      <p class="lead" data-a style="margin-top:30px;transition-delay:0.338s">편하게 질문해 주십시오</p>
     </div>
     <a data-a="pop" href="https://agreeable-sky-0d1ea4300.1.azurestaticapps.net/" target="_blank" rel="noopener" style="transition-delay:0.3s;position:absolute;right:170px;top:calc(50% - 280px);width:400px;text-decoration:none;color:inherit;text-align:center;background:white;padding:32px 28px;border-radius:32px;border:2px solid var(--lime100);box-shadow:0 24px 60px rgba(23,25,29,.12)">
-      <div style="font-size:34px;font-weight:800;margin-bottom:24px">직접 써 보세요</div>
+      <div style="font-size:34px;font-weight:800;margin-bottom:24px">체험판</div>
       <svg style="width:280px;height:280px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg" viewBox="3 3 35 35" shape-rendering="crispEdges" role="img" aria-label="Aries demo QR"><rect width="100%" height="100%" fill="white"/><path d="M4 4h1v1h-1z M5 4h1v1h-1z M6 4h1v1h-1z M7 4h1v1h-1z M8 4h1v1h-1z M9 4h1v1h-1z M10 4h1v1h-1z M13 4h1v1h-1z M19 4h1v1h-1z M20 4h1v1h-1z M21 4h1v1h-1z M22 4h1v1h-1z M23 4h1v1h-1z M24 4h1v1h-1z M25 4h1v1h-1z M26 4h1v1h-1z M27 4h1v1h-1z M28 4h1v1h-1z M30 4h1v1h-1z M31 4h1v1h-1z M32 4h1v1h-1z M33 4h1v1h-1z M34 4h1v1h-1z M35 4h1v1h-1z M36 4h1v1h-1z M4 5h1v1h-1z M10 5h1v1h-1z M12 5h1v1h-1z M13 5h1v1h-1z M15 5h1v1h-1z M16 5h1v1h-1z M22 5h1v1h-1z M25 5h1v1h-1z M26 5h1v1h-1z M30 5h1v1h-1z M36 5h1v1h-1z M4 6h1v1h-1z M6 6h1v1h-1z M7 6h1v1h-1z M8 6h1v1h-1z M10 6h1v1h-1z M13 6h1v1h-1z M14 6h1v1h-1z M15 6h1v1h-1z M18 6h1v1h-1z M20 6h1v1h-1z M24 6h1v1h-1z M25 6h1v1h-1z M28 6h1v1h-1z M30 6h1v1h-1z M32 6h1v1h-1z M33 6h1v1h-1z M34 6h1v1h-1z M36 6h1v1h-1z M4 7h1v1h-1z M6 7h1v1h-1z M7 7h1v1h-1z M8 7h1v1h-1z M10 7h1v1h-1z M12 7h1v1h-1z M13 7h1v1h-1z M15 7h1v1h-1z M20 7h1v1h-1z M21 7h1v1h-1z M24 7h1v1h-1z M28 7h1v1h-1z M30 7h1v1h-1z M32 7h1v1h-1z M33 7h1v1h-1z M34 7h1v1h-1z M36 7h1v1h-1z M4 8h1v1h-1z M6 8h1v1h-1z M7 8h1v1h-1z M8 8h1v1h-1z M10 8h1v1h-1z M14 8h1v1h-1z M16 8h1v1h-1z M17 8h1v1h-1z M18 8h1v1h-1z M19 8h1v1h-1z M22 8h1v1h-1z M23 8h1v1h-1z M24 8h1v1h-1z M25 8h1v1h-1z M26 8h1v1h-1z M27 8h1v1h-1z M30 8h1v1h-1z M32 8h1v1h-1z M33 8h1v1h-1z M34 8h1v1h-1z M36 8h1v1h-1z M4 9h1v1h-1z M10 9h1v1h-1z M12 9h1v1h-1z M14 9h1v1h-1z M17 9h1v1h-1z M18 9h1v1h-1z M19 9h1v1h-1z M20 9h1v1h-1z M21 9h1v1h-1z M22 9h1v1h-1z M24 9h1v1h-1z M30 9h1v1h-1z M36 9h1v1h-1z M4 10h1v1h-1z M5 10h1v1h-1z M6 10h1v1h-1z M7 10h1v1h-1z M8 10h1v1h-1z M9 10h1v1h-1z M10 10h1v1h-1z M12 10h1v1h-1z M14 10h1v1h-1z M16 10h1v1h-1z M18 10h1v1h-1z M20 10h1v1h-1z M22 10h1v1h-1z M24 10h1v1h-1z M26 10h1v1h-1z M28 10h1v1h-1z M30 10h1v1h-1z M31 10h1v1h-1z M32 10h1v1h-1z M33 10h1v1h-1z M34 10h1v1h-1z M35 10h1v1h-1z M36 10h1v1h-1z M16 11h1v1h-1z M17 11h1v1h-1z M19 11h1v1h-1z M25 11h1v1h-1z M26 11h1v1h-1z M4 12h1v1h-1z M5 12h1v1h-1z M6 12h1v1h-1z M7 12h1v1h-1z M8 12h1v1h-1z M10 12h1v1h-1z M11 12h1v1h-1z M12 12h1v1h-1z M13 12h1v1h-1z M14 12h1v1h-1z M16 12h1v1h-1z M18 12h1v1h-1z M19 12h1v1h-1z M21 12h1v1h-1z M28 12h1v1h-1z M29 12h1v1h-1z M31 12h1v1h-1z M33 12h1v1h-1z M35 12h1v1h-1z M4 13h1v1h-1z M7 13h1v1h-1z M11 13h1v1h-1z M13 13h1v1h-1z M19 13h1v1h-1z M20 13h1v1h-1z M22 13h1v1h-1z M23 13h1v1h-1z M24 13h1v1h-1z M25 13h1v1h-1z M26 13h1v1h-1z M27 13h1v1h-1z M30 13h1v1h-1z M34 13h1v1h-1z M35 13h1v1h-1z M36 13h1v1h-1z M5 14h1v1h-1z M6 14h1v1h-1z M8 14h1v1h-1z M10 14h1v1h-1z M12 14h1v1h-1z M13 14h1v1h-1z M15 14h1v1h-1z M16 14h1v1h-1z M22 14h1v1h-1z M25 14h1v1h-1z M29 14h1v1h-1z M30 14h1v1h-1z M31 14h1v1h-1z M32 14h1v1h-1z M33 14h1v1h-1z M35 14h1v1h-1z M4 15h1v1h-1z M7 15h1v1h-1z M8 15h1v1h-1z M11 15h1v1h-1z M13 15h1v1h-1z M14 15h1v1h-1z M15 15h1v1h-1z M18 15h1v1h-1z M20 15h1v1h-1z M24 15h1v1h-1z M25 15h1v1h-1z M28 15h1v1h-1z M31 15h1v1h-1z M34 15h1v1h-1z M4 16h1v1h-1z M6 16h1v1h-1z M10 16h1v1h-1z M11 16h1v1h-1z M12 16h1v1h-1z M13 16h1v1h-1z M15 16h1v1h-1z M20 16h1v1h-1z M21 16h1v1h-1z M24 16h1v1h-1z M29 16h1v1h-1z M31 16h1v1h-1z M32 16h1v1h-1z M33 16h1v1h-1z M4 17h1v1h-1z M6 17h1v1h-1z M8 17h1v1h-1z M9 17h1v1h-1z M11 17h1v1h-1z M13 17h1v1h-1z M14 17h1v1h-1z M16 17h1v1h-1z M17 17h1v1h-1z M18 17h1v1h-1z M19 17h1v1h-1z M23 17h1v1h-1z M24 17h1v1h-1z M25 17h1v1h-1z M26 17h1v1h-1z M27 17h1v1h-1z M28 17h1v1h-1z M30 17h1v1h-1z M35 17h1v1h-1z M36 17h1v1h-1z M8 18h1v1h-1z M10 18h1v1h-1z M11 18h1v1h-1z M13 18h1v1h-1z M14 18h1v1h-1z M17 18h1v1h-1z M18 18h1v1h-1z M19 18h1v1h-1z M20 18h1v1h-1z M22 18h1v1h-1z M24 18h1v1h-1z M25 18h1v1h-1z M28 18h1v1h-1z M29 18h1v1h-1z M35 18h1v1h-1z M4 19h1v1h-1z M5 19h1v1h-1z M9 19h1v1h-1z M16 19h1v1h-1z M17 19h1v1h-1z M19 19h1v1h-1z M22 19h1v1h-1z M23 19h1v1h-1z M25 19h1v1h-1z M29 19h1v1h-1z M31 19h1v1h-1z M34 19h1v1h-1z M4 20h1v1h-1z M5 20h1v1h-1z M6 20h1v1h-1z M7 20h1v1h-1z M9 20h1v1h-1z M10 20h1v1h-1z M11 20h1v1h-1z M13 20h1v1h-1z M16 20h1v1h-1z M18 20h1v1h-1z M19 20h1v1h-1z M21 20h1v1h-1z M24 20h1v1h-1z M28 20h1v1h-1z M31 20h1v1h-1z M32 20h1v1h-1z M35 20h1v1h-1z M4 21h1v1h-1z M6 21h1v1h-1z M8 21h1v1h-1z M9 21h1v1h-1z M11 21h1v1h-1z M12 21h1v1h-1z M19 21h1v1h-1z M20 21h1v1h-1z M23 21h1v1h-1z M24 21h1v1h-1z M27 21h1v1h-1z M30 21h1v1h-1z M33 21h1v1h-1z M35 21h1v1h-1z M36 21h1v1h-1z M4 22h1v1h-1z M8 22h1v1h-1z M9 22h1v1h-1z M10 22h1v1h-1z M14 22h1v1h-1z M15 22h1v1h-1z M16 22h1v1h-1z M22 22h1v1h-1z M24 22h1v1h-1z M26 22h1v1h-1z M28 22h1v1h-1z M29 22h1v1h-1z M30 22h1v1h-1z M33 22h1v1h-1z M35 22h1v1h-1z M7 23h1v1h-1z M9 23h1v1h-1z M11 23h1v1h-1z M12 23h1v1h-1z M15 23h1v1h-1z M18 23h1v1h-1z M20 23h1v1h-1z M22 23h1v1h-1z M24 23h1v1h-1z M25 23h1v1h-1z M28 23h1v1h-1z M29 23h1v1h-1z M34 23h1v1h-1z M5 24h1v1h-1z M8 24h1v1h-1z M10 24h1v1h-1z M11 24h1v1h-1z M12 24h1v1h-1z M13 24h1v1h-1z M14 24h1v1h-1z M15 24h1v1h-1z M21 24h1v1h-1z M29 24h1v1h-1z M31 24h1v1h-1z M32 24h1v1h-1z M35 24h1v1h-1z M4 25h1v1h-1z M6 25h1v1h-1z M7 25h1v1h-1z M8 25h1v1h-1z M11 25h1v1h-1z M12 25h1v1h-1z M14 25h1v1h-1z M16 25h1v1h-1z M17 25h1v1h-1z M18 25h1v1h-1z M19 25h1v1h-1z M23 25h1v1h-1z M24 25h1v1h-1z M25 25h1v1h-1z M26 25h1v1h-1z M27 25h1v1h-1z M28 25h1v1h-1z M29 25h1v1h-1z M30 25h1v1h-1z M33 25h1v1h-1z M35 25h1v1h-1z M36 25h1v1h-1z M4 26h1v1h-1z M8 26h1v1h-1z M10 26h1v1h-1z M11 26h1v1h-1z M14 26h1v1h-1z M17 26h1v1h-1z M18 26h1v1h-1z M19 26h1v1h-1z M20 26h1v1h-1z M21 26h1v1h-1z M22 26h1v1h-1z M25 26h1v1h-1z M33 26h1v1h-1z M35 26h1v1h-1z M4 27h1v1h-1z M9 27h1v1h-1z M12 27h1v1h-1z M13 27h1v1h-1z M14 27h1v1h-1z M16 27h1v1h-1z M17 27h1v1h-1z M20 27h1v1h-1z M23 27h1v1h-1z M25 27h1v1h-1z M26 27h1v1h-1z M29 27h1v1h-1z M30 27h1v1h-1z M33 27h1v1h-1z M34 27h1v1h-1z M4 28h1v1h-1z M5 28h1v1h-1z M6 28h1v1h-1z M9 28h1v1h-1z M10 28h1v1h-1z M13 28h1v1h-1z M14 28h1v1h-1z M16 28h1v1h-1z M18 28h1v1h-1z M21 28h1v1h-1z M22 28h1v1h-1z M24 28h1v1h-1z M27 28h1v1h-1z M28 28h1v1h-1z M29 28h1v1h-1z M30 28h1v1h-1z M31 28h1v1h-1z M32 28h1v1h-1z M36 28h1v1h-1z M12 29h1v1h-1z M13 29h1v1h-1z M14 29h1v1h-1z M21 29h1v1h-1z M22 29h1v1h-1z M23 29h1v1h-1z M24 29h1v1h-1z M28 29h1v1h-1z M32 29h1v1h-1z M34 29h1v1h-1z M36 29h1v1h-1z M4 30h1v1h-1z M5 30h1v1h-1z M6 30h1v1h-1z M7 30h1v1h-1z M8 30h1v1h-1z M9 30h1v1h-1z M10 30h1v1h-1z M12 30h1v1h-1z M13 30h1v1h-1z M15 30h1v1h-1z M16 30h1v1h-1z M19 30h1v1h-1z M21 30h1v1h-1z M24 30h1v1h-1z M26 30h1v1h-1z M27 30h1v1h-1z M28 30h1v1h-1z M30 30h1v1h-1z M32 30h1v1h-1z M33 30h1v1h-1z M34 30h1v1h-1z M35 30h1v1h-1z M4 31h1v1h-1z M10 31h1v1h-1z M13 31h1v1h-1z M14 31h1v1h-1z M15 31h1v1h-1z M18 31h1v1h-1z M19 31h1v1h-1z M20 31h1v1h-1z M22 31h1v1h-1z M24 31h1v1h-1z M25 31h1v1h-1z M28 31h1v1h-1z M32 31h1v1h-1z M33 31h1v1h-1z M34 31h1v1h-1z M36 31h1v1h-1z M4 32h1v1h-1z M6 32h1v1h-1z M7 32h1v1h-1z M8 32h1v1h-1z M10 32h1v1h-1z M12 32h1v1h-1z M13 32h1v1h-1z M15 32h1v1h-1z M19 32h1v1h-1z M20 32h1v1h-1z M21 32h1v1h-1z M24 32h1v1h-1z M26 32h1v1h-1z M28 32h1v1h-1z M29 32h1v1h-1z M30 32h1v1h-1z M31 32h1v1h-1z M32 32h1v1h-1z M35 32h1v1h-1z M4 33h1v1h-1z M6 33h1v1h-1z M7 33h1v1h-1z M8 33h1v1h-1z M10 33h1v1h-1z M12 33h1v1h-1z M14 33h1v1h-1z M16 33h1v1h-1z M17 33h1v1h-1z M18 33h1v1h-1z M20 33h1v1h-1z M21 33h1v1h-1z M22 33h1v1h-1z M23 33h1v1h-1z M24 33h1v1h-1z M25 33h1v1h-1z M27 33h1v1h-1z M28 33h1v1h-1z M29 33h1v1h-1z M31 33h1v1h-1z M32 33h1v1h-1z M33 33h1v1h-1z M34 33h1v1h-1z M35 33h1v1h-1z M36 33h1v1h-1z M4 34h1v1h-1z M6 34h1v1h-1z M7 34h1v1h-1z M8 34h1v1h-1z M10 34h1v1h-1z M12 34h1v1h-1z M17 34h1v1h-1z M18 34h1v1h-1z M19 34h1v1h-1z M20 34h1v1h-1z M21 34h1v1h-1z M25 34h1v1h-1z M30 34h1v1h-1z M33 34h1v1h-1z M4 35h1v1h-1z M10 35h1v1h-1z M12 35h1v1h-1z M14 35h1v1h-1z M16 35h1v1h-1z M17 35h1v1h-1z M19 35h1v1h-1z M20 35h1v1h-1z M22 35h1v1h-1z M23 35h1v1h-1z M25 35h1v1h-1z M26 35h1v1h-1z M27 35h1v1h-1z M30 35h1v1h-1z M31 35h1v1h-1z M32 35h1v1h-1z M33 35h1v1h-1z M34 35h1v1h-1z M4 36h1v1h-1z M5 36h1v1h-1z M6 36h1v1h-1z M7 36h1v1h-1z M8 36h1v1h-1z M9 36h1v1h-1z M10 36h1v1h-1z M12 36h1v1h-1z M13 36h1v1h-1z M16 36h1v1h-1z M18 36h1v1h-1z M19 36h1v1h-1z M21 36h1v1h-1z M23 36h1v1h-1z M24 36h1v1h-1z M26 36h1v1h-1z M27 36h1v1h-1z M28 36h1v1h-1z M29 36h1v1h-1z M30 36h1v1h-1z M31 36h1v1h-1z M33 36h1v1h-1z M35 36h1v1h-1z" fill="black"/></svg>
-      <div style="font-size:20px;margin-top:24px">카메라로 QR을 비춰 주세요</div>
+      <div style="font-size:20px;margin-top:24px">카메라로 QR을 비춰 주십시오</div>
       <div style="font-size:14px;margin-top:8px;word-break:break-all">agreeable-sky-0d1ea4300.1.azurestaticapps.net</div>
-      <div style="font-size:15px;margin-top:16px;color:var(--mute);line-height:1.5">안드로이드 앱을 웹으로 옮긴 체험판이라<br>실제 앱과 조금 다르거나 버그가 있을 수 있어요</div>
+      <div style="font-size:15px;margin-top:16px;color:var(--mute);line-height:1.5">안드로이드 앱을 웹으로 옮긴 체험판이라<br>실제 앱과 다르거나 버그가 있을 수 있습니다</div>
     </a>
     <img class="float" data-a="pop" style="position:absolute;right:585px;top:calc(50% + 70px);width:170px;z-index:2;transition-delay:0.449s" src="img/art/a01/ari-celebrate.png" alt="아리">
   </section>
@@ -558,12 +643,12 @@
   const CHARTS = {
     c1: () => new Chart(document.getElementById('c1'), {
       type: 'doughnut',
-      data: { labels: ['써 봤어요', '안 써 봤어요'], datasets: [{ data: [67.9, 32.1], backgroundColor: [C.deep, C.lime100], borderWidth: 0 }] },
+      data: { labels: ['사용 경험 있음', '사용 경험 없음'], datasets: [{ data: [67.9, 32.1], backgroundColor: [C.deep, C.lime100], borderWidth: 0 }] },
       options: { cutout: '68%', maintainAspectRatio: false, animation: { ...anim(), animateRotate: true }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 18, padding: 18 } } } },
     }),
     c2: () => new Chart(document.getElementById('c2'), {
       type: 'bar',
-      data: { labels: ['믿어요', '그 밖'], datasets: [{ data: [55.0, 45.0], backgroundColor: [C.amber, C.mute], borderRadius: 14 }] },
+      data: { labels: ['믿음', '그 외'], datasets: [{ data: [55.0, 45.0], backgroundColor: [C.amber, C.mute], borderRadius: 14 }] },
       options: { maintainAspectRatio: false, layout: { padding: { top: 34 } }, animation: { ...anim(), delay: (c) => c.dataIndex * 200 }, plugins: { legend: { display: false }}, scales: { y: { display: false, max: 70 }, x: { grid: { display: false }, border: { display: false } } } }, plugins: [valueLabels],
     }),
     c3: () => new Chart(document.getElementById('c3'), {
@@ -586,6 +671,33 @@
   const tell = (msg) => { try { window.opener?.postMessage(msg, '*'); } catch (e) {} };
   addEventListener('message', (e) => { const d = e.data || {}; if (d.type === 'go') go(d.n); if (d.type === 'fs') document.documentElement.requestFullscreen?.(); });
   const OUT_SPEED = 0.29; // 나갈 때는 들어올 때 시간의 29% (순서는 정반대). 들어올 때를 1.25배 느리게 한 뒤에도 나가는 시간은 그대로(2026-10-24)
+  // 후기 바퀴: 카드 k는 원 둘레 위 각도 (k + o)·STEP에 놓임. o를 WHEEL_FROM → 0으로 줄이면 아래에서 위로 굴러 올라오며
+  // 가운데를 지날 때 커지고 멀어질수록 작아짐. 위·아래가 대칭이라 상하 여백이 같음
+  // 맨 바깥(k=±4)은 멈췄을 때 화면 밖이고 구를 때만 지나감. FROM은 그 카드까지 처음에 안 보이도록 8
+  const WHEEL = { R: 500, W: 620, STEP: 20, FROM: 8, AT: 0.3, MS: 2000, OUT: 1200 / OUT_SPEED, OVER: 0.25, BACK: 0.12 }; // MS = 들어오는 시간, OUT × OUT_SPEED = 나가는 시간
+  // 들어올 때: 빠르게 들어와 가운데를 OVER칸 지나친 뒤, 통통 튕기며 제자리로
+  const wheelIn = (q) => { if (q >= 1) return 1; const T = 0.42, A = WHEEL.OVER / WHEEL.FROM;
+    if (q < T) { const s = 1 - q / T; return (1 + A) * (1 - s * s * s); }
+    const u = (q - T) / (1 - T), b = 4.5, w = 4 * Math.PI; return 1 + A * Math.exp(-b * u) * (Math.cos(w * u) + (b / w) * Math.sin(w * u)); };
+  // 나갈 때: 반대쪽으로 BACK칸 살짝 물러났다가 점점 빨라지며 위로
+  const wheelOut = (q) => { const T = 0.35, B = WHEEL.BACK / WHEEL.FROM;
+    if (q < T) { const s = q / T; return -B * (1 - (1 - s) * (1 - s)); }
+    const s = (q - T) / (1 - T); return -B + (1 + B) * s * s * s; };
+  const wheelAt = (o) => document.querySelectorAll('#sRev .slot').forEach((el) => {
+    const p = +el.dataset.k + o, a = Math.max(-4.2, Math.min(4.2, p)) * WHEEL.STEP * Math.PI / 180;
+    const x = WHEEL.R * (1 - Math.cos(a)), y = WHEEL.R * Math.sin(a), sc = Math.max(0.5, 1 - 0.1 * Math.abs(p));
+    // 오른쪽 끝도 왼쪽과 같은 원: 보이는 폭을 W로 같게 두면 왼쪽 호가 그대로 옮겨 감
+    el.style.width = `${(WHEEL.W / sc).toFixed(1)}px`;
+    el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translateY(-50%) scale(${sc.toFixed(3)})`;
+    const d = Math.abs(p); // 2칸까지 또렷, 3칸(맨 바깥 카드)은 연하게, 그 밖은 사라짐
+    el.style.opacity = (d <= 2 ? 1 : d <= 3 ? 1 - 0.55 * (d - 2) : Math.max(0, 0.45 * (3.8 - d) / 0.8)).toFixed(3);
+    el.style.zIndex = 10 - Math.round(Math.abs(p));
+    el.style.setProperty('--g', Math.max(0, 1 - Math.abs(p)).toFixed(3));
+  });
+  let wheelRun = 0;
+  const wheelGo = (from, to, ms, ease) => { const run = ++wheelRun, t0 = performance.now();
+    const step = (t) => { if (run !== wheelRun) return; const q = Math.min(1, (t - t0) / ms); wheelAt(from + (to - from) * ease(q)); if (q < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step); };
   const secs = (v) => Math.max(...v.split(',').map((x) => parseFloat(x) * (x.trim().endsWith('ms') ? 0.001 : 1)));
   const planOut = (slide) => {
     const items = [...slide.querySelectorAll('*')].map((el) => { const cs = getComputedStyle(el); return { el, d: secs(cs.transitionDelay), t: secs(cs.transitionDuration), od: el.style.transitionDelay, ot: el.style.transitionDuration }; }).filter((x) => x.t > 0);
@@ -594,10 +706,12 @@
     const counts = [...slide.querySelectorAll('[data-count]')];
     if (counts.length) extra.push({ kind: 'count', d: Math.max(...counts.map(countStart)), t: COUNT_MS / 1000 });
     if (slide.id === 's3' && charts.length) extra.push({ kind: 'chart', d: Math.max(...slide.querySelectorAll('canvas').length ? [...slide.querySelectorAll('canvas')].map(ownDelay) : [0]) + ARRIVE, t: CHART_MS / 1000 + 0.5 });
+    if (slide.id === 'sRev') extra.push({ kind: 'wheel', d: WHEEL.AT, t: WHEEL.OUT / 1000 });
     const end = Math.max(0, ...items.map((x) => x.d + x.t), ...extra.map((x) => x.d + x.t));
     const timers = extra.map((x) => setTimeout(() => {
       const dur = x.t * OUT_SPEED * 1000;
       if (x.kind === 'chart') charts.forEach((c) => { c.$out = true; c.data.datasets.forEach((d) => { d.data = d.data.map(() => 0); }); c.options.animation = { duration: dur, easing: 'easeInQuart' }; c.update(); });
+      if (x.kind === 'wheel') wheelGo(0, -WHEEL.FROM, dur, wheelOut); // 나갈 때는 살짝 물러났다가 같은 방향으로 계속 굴러 위로 올라가며 사라짐
       if (x.kind === 'count') slide.querySelectorAll('[data-count]').forEach((el) => {
         const from = parseFloat(el.textContent) || 0, dec = (el.textContent.split('.')[1] || '').length, t0 = performance.now(), run = el.dataset.run;
         const step = (t) => { if (el.dataset.run !== run) return; const p = Math.min(1, (t - t0) / dur); el.textContent = (from * (1 - p * p * p)).toFixed(dec); if (p < 1) requestAnimationFrame(step); };
@@ -629,7 +743,7 @@
       startSlide(n);
     };
     cur = n; document.getElementById('pg').textContent = n === 0 ? '' : `${n} / ${slides.length - 1}`;
-    if (old && !preview) go.t3 = setTimeout(enter, Math.min(1800, outPlan.ms)); else enter();
+    if (old && !preview) go.t3 = setTimeout(enter, old.id === 'sRev' ? outPlan.ms : Math.min(1800, outPlan.ms)); else enter(); // 후기 장은 바퀴가 끝까지 구른 뒤 넘어감
     if (!preview) { history.replaceState(null, '', '#' + (n + 1)); tell({ type: 'at', n, total: slides.length, ratio }); }
   };
   const startSlide = (n) => {
@@ -638,6 +752,7 @@
     // 숫자는 장이 열리고 COUNT_AT 뒤, 단 자기가 늦게 나타나는 요소(10장 통계 등)는 나타나는 순간부터 올라감
     s.querySelectorAll('[data-count]').forEach((el) => later(() => countUp(el), countStart(el)));
     if (s.id === 's3') s.querySelectorAll('canvas').forEach((cv) => later(() => charts.push(CHARTS[cv.id]()), ownDelay(cv) + ARRIVE));
+    if (s.id === 'sRev') { wheelRun++; wheelAt(preview ? 0 : WHEEL.FROM); if (!preview) later(() => wheelGo(WHEEL.FROM, 0, WHEEL.MS, wheelIn), WHEEL.AT); }
     if (s.id === 's6' && !preview) { demo.currentTime = 0; demo.play().catch(() => {}); } else demo.pause();
   };
   addEventListener('keydown', (e) => { if (preview) return;
@@ -647,6 +762,7 @@
   });
   addEventListener('click', (e) => { if (!preview) go(cur + (e.clientX > innerWidth / 3 ? 1 : -1)); });
   fit();
+  wheelAt(WHEEL.FROM);
   go((parseInt(location.hash.slice(1)) || 1) - 1);
   addEventListener('hashchange', () => go((parseInt(location.hash.slice(1)) || 1) - 1));
 })();
